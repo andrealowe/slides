@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Domino — AI Governance Built In</title>
+
+    <!-- Fonts: New Grotesk (licensed) with Inter/JetBrains Mono fallback -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+
+    <style>
+        /* ===========================================
+           CSS CUSTOM PROPERTIES — DOMINO LIGHT CORPORATE
+           White background, black text, orange accents.
+           =========================================== */
+        :root {
+            /* Domino Brand Colors — Light Corporate */
+            --bg-primary: #FFFFFF;
+            --bg-surface: #F1F0F4;
+            --text-primary: #000000;
+            --text-secondary: #3C3A42;
+            --text-muted: #777384;
+            --accent: #FF6543;
+            --light-purple: #D4C9FC;
+            --light-blue: #A5C5F6;
+            --divider: rgba(0, 0, 0, 0.08);
+            --domino-gradient: linear-gradient(135deg, #FF9421 0%, #F8475E 34%, #F020B3 66%, #8636F8 100%);
+
+            /* Typography — New Grotesk with Inter fallback */
+            --font-display: 'New Grotesk', 'Inter', 'Helvetica Neue', sans-serif;
+            --font-body: 'New Grotesk', 'Inter', 'Helvetica Neue', sans-serif;
+            --font-mono: 'New Grotesk Mono', 'JetBrains Mono', monospace;
+
+            /* VIDEO-OPTIMIZED: Larger base sizes for legibility */
+            --title-size: clamp(2rem, 5.5vw, 4.5rem);
+            --h2-size: clamp(1.5rem, 4vw, 3rem);
+            --h3-size: clamp(1.1rem, 2.5vw, 1.75rem);
+            --body-size: clamp(0.9rem, 1.8vw, 1.4rem);
+            --small-size: clamp(0.85rem, 1.4vw, 1.15rem);
+
+            /* Spacing */
+            --slide-padding: clamp(2rem, 5vw, 5rem);
+            --content-gap: clamp(1rem, 2.5vw, 2.5rem);
+
+            /* Animation */
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --duration-normal: 0.6s;
+        }
+
+        /* ===========================================
+           BASE STYLES
+           =========================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-snap-type: y mandatory;
+            height: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: var(--font-body);
+            font-weight: 400;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            height: 100%;
+        }
+
+        /* ===========================================
+           SLIDE CONTAINER
+           Each slide = exact viewport height
+           =========================================== */
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            overflow: hidden;
+            scroll-snap-align: start;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .slide-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            max-height: 100%;
+            overflow: hidden;
+            padding: var(--slide-padding);
+            padding-bottom: clamp(3rem, 5vw, 5rem);
+        }
+
+        /* ===========================================
+           TYPOGRAPHY
+           =========================================== */
+        h1 {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: var(--title-size);
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+        }
+
+        h2 {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: var(--h2-size);
+            line-height: 1.15;
+            letter-spacing: -0.01em;
+            color: var(--text-primary);
+        }
+
+        h3 {
+            font-family: var(--font-display);
+            font-weight: 600;
+            font-size: var(--h3-size);
+            line-height: 1.2;
+            color: var(--text-primary);
+        }
+
+        p {
+            font-family: var(--font-body);
+            font-weight: 400;
+            font-size: var(--body-size);
+            line-height: 1.5;
+            color: var(--text-secondary);
+        }
+
+        .eyebrow {
+            font-family: var(--font-mono);
+            font-weight: 500;
+            font-size: var(--small-size);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--accent);
+        }
+
+        /* ===========================================
+           SLIDE 1 — THE PROBLEM
+           =========================================== */
+        .slide-problem {
+            background: var(--bg-primary);
+        }
+
+        .slide-problem .slide-content {
+            max-width: none;
+            gap: clamp(1.5rem, 3vw, 2.5rem);
+        }
+
+        .problem-headline {
+            font-size: clamp(2rem, 5vw, 4rem);
+        }
+
+        .problem-subtitle {
+            font-size: clamp(1rem, 2vw, 1.5rem);
+            color: var(--text-muted);
+            max-width: 700px;
+        }
+
+        /* Traditional governance flow — visual showing serial steps */
+        .serial-flow {
+            display: flex;
+            align-items: center;
+            gap: clamp(0.5rem, 1.5vw, 1.25rem);
+            flex-wrap: nowrap;
+            margin-top: clamp(0.5rem, 1.5vw, 1rem);
+        }
+
+        .serial-step {
+            display: flex;
+            align-items: center;
+            gap: clamp(0.3rem, 0.8vw, 0.75rem);
+            padding: clamp(0.6rem, 1.2vw, 1rem) clamp(1rem, 2vw, 1.75rem);
+            background: var(--bg-surface);
+            border-radius: 10px;
+            font-family: var(--font-body);
+            font-size: clamp(1rem, 1.8vw, 1.4rem);
+            font-weight: 600;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+
+        .serial-arrow {
+            font-size: clamp(1.2rem, 2.2vw, 1.75rem);
+            color: var(--text-muted);
+            opacity: 0.5;
+        }
+
+        .serial-step.waiting {
+            border: 2px dashed rgba(0,0,0,0.15);
+            background: transparent;
+            color: var(--text-muted);
+        }
+
+        .time-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4em;
+            padding: clamp(0.4rem, 0.8vw, 0.6rem) clamp(0.75rem, 1.5vw, 1.25rem);
+            background: rgba(255, 101, 67, 0.08);
+            border-radius: 20px;
+            font-family: var(--font-mono);
+            font-size: clamp(0.9rem, 1.5vw, 1.2rem);
+            font-weight: 600;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* ===========================================
+           SLIDE 2 — DOMINO'S APPROACH (3 PRINCIPLES)
+           =========================================== */
+        .slide-approach {
+            background: var(--bg-primary);
+        }
+
+        .slide-approach .slide-content {
+            gap: clamp(1.5rem, 3vw, 2.5rem);
+        }
+
+        .principles-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: clamp(1rem, 2vw, 2rem);
+        }
+
+        .principle-card {
+            background: var(--bg-surface);
+            border-radius: 12px;
+            padding: clamp(1.25rem, 2.5vw, 2rem);
+            display: flex;
+            flex-direction: column;
+            gap: clamp(0.5rem, 1vw, 0.75rem);
+        }
+
+        .principle-card .old-way {
+            font-family: var(--font-mono);
+            font-size: clamp(0.85rem, 1.3vw, 1.1rem);
+            color: #C4A0A0;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            text-decoration: line-through;
+            text-decoration-color: #C4A0A0;
+        }
+
+        .principle-card h3 {
+            font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+            background: var(--domino-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .principle-card p {
+            font-size: clamp(0.8rem, 1.3vw, 1.1rem);
+            color: var(--text-muted);
+            line-height: 1.45;
+        }
+
+        /* ===========================================
+           SLIDE 3 — THREE PERSPECTIVES TRANSITION
+           =========================================== */
+        .slide-perspectives {
+            background: var(--bg-surface);
+        }
+
+        .slide-perspectives .slide-content {
+            align-items: center;
+            text-align: center;
+            gap: clamp(1.5rem, 3vw, 2.5rem);
+        }
+
+        .personas-row {
+            display: flex;
+            gap: clamp(1.5rem, 3vw, 3rem);
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .persona {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: clamp(0.5rem, 1vw, 0.75rem);
+        }
+
+        .persona-icon {
+            width: clamp(80px, 12vw, 130px);
+            height: clamp(80px, 12vw, 130px);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .persona-icon svg {
+            width: clamp(36px, 5.5vw, 58px);
+            height: clamp(36px, 5.5vw, 58px);
+        }
+
+        .persona-icon.practitioner { background: rgba(165, 197, 246, 0.3); }
+        .persona-icon.practitioner svg { stroke: #3D81E7; }
+        .persona-icon.validator { background: rgba(212, 201, 252, 0.3); }
+        .persona-icon.validator svg { stroke: #563FB3; }
+        .persona-icon.risk { background: rgba(255, 101, 67, 0.12); }
+        .persona-icon.risk svg { stroke: #FF6543; }
+
+        .persona-label {
+            font-family: var(--font-display);
+            font-weight: 600;
+            font-size: clamp(1.1rem, 2vw, 1.6rem);
+            color: var(--text-primary);
+        }
+
+        /* ===========================================
+           SLIDE 4 — CLOSING / SUMMARY
+           =========================================== */
+        .slide-closing {
+            background: var(--bg-primary);
+        }
+
+        .slide-closing .slide-content {
+            gap: clamp(1.25rem, 2.5vw, 2rem);
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: clamp(1rem, 2vw, 1.5rem);
+        }
+
+        .summary-card {
+            background: var(--bg-surface);
+            border-radius: 12px;
+            padding: clamp(1rem, 2vw, 1.5rem);
+            display: flex;
+            flex-direction: column;
+            gap: clamp(0.4rem, 0.8vw, 0.6rem);
+        }
+
+        .summary-card .card-role {
+            font-family: var(--font-mono);
+            font-size: clamp(0.65rem, 0.9vw, 0.8rem);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--accent);
+        }
+
+        .summary-card h3 {
+            font-size: clamp(1rem, 2vw, 1.5rem);
+        }
+
+        .summary-card p {
+            font-size: clamp(0.8rem, 1.3vw, 1.05rem);
+            color: var(--text-muted);
+        }
+
+        /* Outcome callout */
+        .outcome-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: clamp(0.75rem, 1.5vw, 1.25rem);
+            padding: clamp(1rem, 2vw, 1.5rem) clamp(1.5rem, 3vw, 2.5rem);
+            background: var(--bg-surface);
+            border-radius: 12px;
+            border-left: 4px solid var(--accent);
+        }
+
+        .outcome-bar .outcome-text {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: clamp(1.1rem, 2.2vw, 1.7rem);
+            color: var(--text-primary);
+        }
+
+        .outcome-bar .months {
+            color: var(--text-muted);
+        }
+
+        .outcome-bar .days {
+            background: var(--domino-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ===========================================
+           LINE ART DECORATION
+           Subtle gradient-stroke motif (brand-approved)
+           =========================================== */
+        .line-art {
+            position: absolute;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .line-art-tr {
+            top: -40px;
+            right: -40px;
+            width: clamp(200px, 30vw, 400px);
+            height: clamp(200px, 30vw, 400px);
+            border-radius: 50%;
+            border: 2px solid transparent;
+            background: linear-gradient(var(--bg-primary), var(--bg-primary)) padding-box,
+                        var(--domino-gradient) border-box;
+            opacity: 0.25;
+        }
+
+        .line-art-bl {
+            bottom: -60px;
+            left: -60px;
+            width: clamp(150px, 25vw, 350px);
+            height: clamp(150px, 25vw, 350px);
+            border-radius: 50%;
+            border: 2px solid transparent;
+            background: linear-gradient(var(--bg-primary), var(--bg-primary)) padding-box,
+                        var(--domino-gradient) border-box;
+            opacity: 0.15;
+        }
+
+        /* Surface-colored variant for slides with bg-surface */
+        .line-art-tr-surface {
+            top: -40px;
+            right: -40px;
+            width: clamp(200px, 30vw, 400px);
+            height: clamp(200px, 30vw, 400px);
+            border-radius: 50%;
+            border: 2px solid transparent;
+            background: linear-gradient(var(--bg-surface), var(--bg-surface)) padding-box,
+                        var(--domino-gradient) border-box;
+            opacity: 0.3;
+        }
+
+        /* ===========================================
+           ANIMATIONS
+           =========================================== */
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity var(--duration-normal) var(--ease-out-expo),
+                        transform var(--duration-normal) var(--ease-out-expo);
+        }
+
+        .slide.visible .reveal {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal:nth-child(1) { transition-delay: 0.05s; }
+        .reveal:nth-child(2) { transition-delay: 0.15s; }
+        .reveal:nth-child(3) { transition-delay: 0.25s; }
+        .reveal:nth-child(4) { transition-delay: 0.35s; }
+        .reveal:nth-child(5) { transition-delay: 0.45s; }
+
+        /* Card stagger inside grids */
+        .principles-grid .reveal:nth-child(1) { transition-delay: 0.1s; }
+        .principles-grid .reveal:nth-child(2) { transition-delay: 0.25s; }
+        .principles-grid .reveal:nth-child(3) { transition-delay: 0.4s; }
+
+        .summary-grid .reveal:nth-child(1) { transition-delay: 0.1s; }
+        .summary-grid .reveal:nth-child(2) { transition-delay: 0.25s; }
+        .summary-grid .reveal:nth-child(3) { transition-delay: 0.4s; }
+
+        .personas-row .reveal:nth-child(1) { transition-delay: 0.15s; }
+        .personas-row .reveal:nth-child(2) { transition-delay: 0.3s; }
+        .personas-row .reveal:nth-child(3) { transition-delay: 0.45s; }
+
+        /* ===========================================
+           EXPORT BUTTONS — Light theme variant
+           =========================================== */
+        .export-btns {
+            position: fixed;
+            top: 12px;
+            right: 12px;
+            z-index: 1001;
+            display: flex;
+            gap: 6px;
+        }
+
+        .export-btn {
+            background: rgba(0,0,0,0.04);
+            border: 1px solid rgba(0,0,0,0.1);
+            color: rgba(0,0,0,0.4);
+            font-family: var(--font-body);
+            font-size: 0.7rem;
+            padding: 5px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            backdrop-filter: blur(8px);
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .export-btn:hover {
+            background: rgba(0,0,0,0.08);
+            color: rgba(0,0,0,0.7);
+        }
+
+        .export-btn:disabled {
+            opacity: 0.5;
+            cursor: wait;
+        }
+
+        /* ===========================================
+           NAV DOTS
+           =========================================== */
+        .nav-dots {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .nav-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.15);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 0;
+        }
+
+        .nav-dot.active {
+            background: var(--accent);
+            transform: scale(1.3);
+        }
+
+        /* ===========================================
+           PROGRESS BAR
+           =========================================== */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: var(--domino-gradient);
+            z-index: 1002;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        /* ===========================================
+           RESPONSIVE BREAKPOINTS
+           =========================================== */
+        @media (max-height: 700px) {
+            :root {
+                --slide-padding: clamp(1rem, 3vw, 3rem);
+                --content-gap: clamp(0.5rem, 1.5vw, 1.25rem);
+                --title-size: clamp(1.5rem, 4.5vw, 3rem);
+                --h2-size: clamp(1.25rem, 3vw, 2.25rem);
+            }
+        }
+
+        @media (max-height: 600px) {
+            :root {
+                --slide-padding: clamp(0.75rem, 2.5vw, 2rem);
+                --title-size: clamp(1.25rem, 4vw, 2.5rem);
+                --body-size: clamp(0.75rem, 1.2vw, 1rem);
+            }
+            .nav-dots, .decorative { display: none; }
+        }
+
+        @media (max-height: 500px) {
+            :root {
+                --slide-padding: clamp(0.5rem, 2vw, 1.25rem);
+                --title-size: clamp(1.1rem, 3.5vw, 2rem);
+                --body-size: clamp(0.7rem, 1vw, 0.9rem);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .principles-grid,
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+            .personas-row {
+                gap: clamp(1rem, 2vw, 1.5rem);
+            }
+            .serial-flow {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .serial-arrow {
+                transform: rotate(90deg);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.2s !important;
+            }
+            html { scroll-behavior: auto; }
+        }
+
+        /* ===========================================
+           PRINT / PDF EXPORT
+           =========================================== */
+        @media print {
+            *, *::before, *::after {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+            .export-btns, .progress-bar, .nav-dots { display: none !important; }
+            html, body { height: auto; overflow: visible; background: var(--bg-primary) !important; }
+            html { scroll-snap-type: none; scroll-behavior: auto; }
+            .slide {
+                break-inside: avoid;
+                page-break-inside: avoid;
+                height: 100vh;
+                overflow: hidden;
+            }
+            .reveal { opacity: 1 !important; transform: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Export buttons -->
+    <div class="export-btns">
+        <button class="export-btn" onclick="document.querySelectorAll('.slide').forEach(s=>s.classList.add('visible'));setTimeout(()=>window.print(),100)" title="Export to PDF">PDF</button>
+        <button class="export-btn" id="pptBtn" onclick="exportToPPT()" title="Download as PowerPoint">PPT</button>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="progress-bar"></div>
+
+    <!-- Nav dots (generated by JS) -->
+    <nav class="nav-dots"></nav>
+
+
+    <!-- =============================================
+         SLIDE 1 — THE PROBLEM
+         Governance is a serialized bottleneck
+         ============================================= -->
+    <section class="slide slide-problem">
+        <div class="line-art line-art-tr"></div>
+        <div class="slide-content">
+            <span class="eyebrow reveal">The Challenge</span>
+            <h1 class="reveal problem-headline">Governance Slows<br>AI Time-to-Value</h1>
+            <p class="reveal problem-subtitle">Traditional governance is a separate, serialized process that happens <em>after</em> development, creating months of delay.</p>
+            <div class="serial-flow reveal">
+                <div class="serial-step">Develop</div>
+                <span class="serial-arrow">→</span>
+                <div class="serial-step">Document</div>
+                <span class="serial-arrow">→</span>
+                <div class="serial-step">Review</div>
+                <span class="serial-arrow">→</span>
+                <div class="serial-step waiting">Wait…</div>
+                <span class="serial-arrow">→</span>
+                <div class="serial-step waiting">Approve</div>
+                <span class="serial-arrow">→</span>
+                <div class="time-label">⏱ Months of Delay</div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- =============================================
+         SLIDE 2 — DOMINO'S APPROACH
+         Built-in · Real-time · Unified
+         ============================================= -->
+    <section class="slide slide-approach">
+        <div class="line-art line-art-bl"></div>
+        <div class="slide-content">
+            <span class="eyebrow reveal">The Domino Difference</span>
+            <h2 class="reveal">Governance Integrated Into Development</h2>
+            <div class="principles-grid">
+                <div class="principle-card reveal">
+                    <span class="old-way">Tacked On</span>
+                    <h3>Built-In</h3>
+                    <p>Policies enforced within development, automatically collecting evidence along the lifecycle.</p>
+                </div>
+                <div class="principle-card reveal">
+                    <span class="old-way">Sequential</span>
+                    <h3>Real-Time</h3>
+                    <p>Validators collaborate with data scientists while models are created, addressing issues as they arise.</p>
+                </div>
+                <div class="principle-card reveal">
+                    <span class="old-way">Fragmented</span>
+                    <h3>Unified</h3>
+                    <p>Policies apply to all model types — in Domino or not — with end-to-end visibility through dashboards.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- =============================================
+         SLIDE 3 — THREE PERSPECTIVES
+         Transition into the demo
+         ============================================= -->
+    <section class="slide slide-perspectives">
+        <div class="line-art line-art-tr-surface"></div>
+        <div class="slide-content">
+            <span class="eyebrow reveal">What We'll See Today</span>
+            <h2 class="reveal">Three Perspectives in Action</h2>
+            <div class="personas-row">
+                <div class="persona reveal">
+                    <div class="persona-icon practitioner">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="16 18 22 12 16 6"></polyline>
+                            <polyline points="8 6 2 12 8 18"></polyline>
+                        </svg>
+                    </div>
+                    <span class="persona-label">Practitioner</span>
+                </div>
+                <div class="persona reveal">
+                    <div class="persona-icon validator">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 11l3 3L22 4"></path>
+                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                        </svg>
+                    </div>
+                    <span class="persona-label">Validator</span>
+                </div>
+                <div class="persona reveal">
+                    <div class="persona-icon risk">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                    </div>
+                    <span class="persona-label">Risk Manager</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- =============================================
+         SLIDE 4 — CLOSING SUMMARY
+         What we've seen + months → days
+         ============================================= -->
+    <section class="slide slide-closing">
+        <div class="line-art line-art-tr"></div>
+        <div class="slide-content">
+            <span class="eyebrow reveal">What We've Seen</span>
+            <h2 class="reveal">Governance That's Built In, Not Bolted On</h2>
+            <div class="summary-grid">
+                <div class="summary-card reveal">
+                    <span class="card-role">Practitioner</span>
+                    <h3>Evidence as You Work</h3>
+                    <p>Attach evidence without leaving your tools.</p>
+                </div>
+                <div class="summary-card reveal">
+                    <span class="card-role">Validator</span>
+                    <h3>Single-Pane Review</h3>
+                    <p>Review and approve from one linked notebook.</p>
+                </div>
+                <div class="summary-card reveal">
+                    <span class="card-role">Risk Manager</span>
+                    <h3>Define Once, Enforce Everywhere</h3>
+                    <p>Policies for all models with a complete audit trail.</p>
+                </div>
+            </div>
+            <div class="outcome-bar reveal">
+                <span class="outcome-text">Validation cycles: <span class="months">Months</span> → <span class="days">Days</span></span>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- PptxGenJS for PowerPoint export -->
+    <script src="https://cdn.jsdelivr.net/gh/gitbrent/PptxGenJS@3.12.0/dist/pptxgen.bundle.js"></script>
+
+    <script>
+        /* ===========================================
+           SLIDE PRESENTATION CONTROLLER
+           Handles navigation, scroll-triggered animations,
+           progress bar, and nav dots.
+           =========================================== */
+        class SlidePresentation {
+            constructor() {
+                this.slides = document.querySelectorAll('.slide');
+                this.currentSlide = 0;
+                this.totalSlides = this.slides.length;
+                this.isScrolling = false;
+
+                this.createNavDots();
+                this.setupIntersectionObserver();
+                this.setupKeyboardNav();
+                this.updateProgress();
+            }
+
+            createNavDots() {
+                const nav = document.querySelector('.nav-dots');
+                this.slides.forEach((_, i) => {
+                    const dot = document.createElement('button');
+                    dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+                    dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
+                    dot.addEventListener('click', () => this.goToSlide(i));
+                    nav.appendChild(dot);
+                });
+                this.dots = document.querySelectorAll('.nav-dot');
+            }
+
+            setupIntersectionObserver() {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                            const index = Array.from(this.slides).indexOf(entry.target);
+                            this.currentSlide = index;
+                            this.updateDots();
+                            this.updateProgress();
+                        }
+                    });
+                }, { threshold: 0.5 });
+
+                this.slides.forEach(slide => observer.observe(slide));
+            }
+
+            setupKeyboardNav() {
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === ' ') {
+                        e.preventDefault();
+                        this.goToSlide(Math.min(this.currentSlide + 1, this.totalSlides - 1));
+                    } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                        e.preventDefault();
+                        this.goToSlide(Math.max(this.currentSlide - 1, 0));
+                    }
+                });
+            }
+
+            goToSlide(index) {
+                this.slides[index].scrollIntoView({ behavior: 'smooth' });
+                this.currentSlide = index;
+                this.updateDots();
+                this.updateProgress();
+            }
+
+            updateDots() {
+                this.dots.forEach((dot, i) => {
+                    dot.classList.toggle('active', i === this.currentSlide);
+                });
+            }
+
+            updateProgress() {
+                const progress = ((this.currentSlide + 1) / this.totalSlides) * 100;
+                document.querySelector('.progress-bar').style.width = progress + '%';
+            }
+        }
+
+        // Initialize presentation
+        document.addEventListener('DOMContentLoaded', () => {
+            new SlidePresentation();
+        });
+
+        /* ===========================================
+           PPT EXPORT
+           Reconstructs slides as a PowerPoint file.
+           =========================================== */
+        async function exportToPPT() {
+            const btn = document.getElementById('pptBtn');
+            btn.disabled = true;
+            btn.textContent = '...';
+
+            try {
+                const pptx = new PptxGenJS();
+                pptx.defineLayout({ name: 'HD', width: 13.333, height: 7.5 });
+                pptx.layout = 'HD';
+
+                const bgWhite = 'FFFFFF';
+                const bgSurface = 'F1F0F4';
+                const textBlack = '000000';
+                const textGrey = '3C3A42';
+                const textMuted = '777384';
+                const accent = 'FF6543';
+
+                // --- Slide 1: The Problem ---
+                const s1 = pptx.addSlide();
+                s1.background = { color: bgWhite };
+                s1.addText('THE CHALLENGE', { x: 0.7, y: 0.8, w: 11, fontSize: 12, fontFace: 'Arial', color: accent, bold: true, spacing: 200 });
+                s1.addText('Governance Slows\nAI Time-to-Value', { x: 0.7, y: 1.4, w: 11, fontSize: 36, fontFace: 'Arial', color: textBlack, bold: true, lineSpacingMultiple: 1.1 });
+                s1.addText('Traditional governance is a separate, serialized process that happens after development — creating months of delay.', { x: 0.7, y: 3.2, w: 8, fontSize: 16, fontFace: 'Arial', color: textMuted });
+                // Serial flow
+                const steps = ['Develop', '→', 'Document', '→', 'Review', '→', 'Wait…', '→', 'Approve', '→', '⏱ Months'];
+                let xPos = 0.7;
+                steps.forEach(step => {
+                    if (step === '→') {
+                        s1.addText('→', { x: xPos, y: 4.6, w: 0.4, fontSize: 14, fontFace: 'Arial', color: textMuted, align: 'center' });
+                        xPos += 0.4;
+                    } else {
+                        const isTime = step.includes('⏱');
+                        s1.addText(step, {
+                            x: xPos, y: 4.4, w: isTime ? 1.6 : 1.1, h: 0.5,
+                            fontSize: 11, fontFace: 'Arial',
+                            color: isTime ? accent : textGrey,
+                            bold: isTime,
+                            align: 'center',
+                            fill: { color: isTime ? 'FFF0EC' : bgSurface },
+                            shape: pptx.shapes.ROUNDED_RECTANGLE,
+                            rectRadius: 0.05
+                        });
+                        xPos += isTime ? 1.8 : 1.3;
+                    }
+                });
+
+                // --- Slide 2: Domino's Approach ---
+                const s2 = pptx.addSlide();
+                s2.background = { color: bgWhite };
+                s2.addText('THE DOMINO DIFFERENCE', { x: 0.7, y: 0.6, w: 11, fontSize: 12, fontFace: 'Arial', color: accent, bold: true, spacing: 200 });
+                s2.addText('Governance Integrated Into Development', { x: 0.7, y: 1.2, w: 11, fontSize: 28, fontFace: 'Arial', color: textBlack, bold: true });
+
+                const cards = [
+                    { old: 'TACKED ON', title: 'Built-In', desc: 'Policies enforced within development, automatically collecting evidence along the lifecycle.' },
+                    { old: 'SEQUENTIAL', title: 'Real-Time', desc: 'Validators collaborate with data scientists while models are created, addressing issues as they arise.' },
+                    { old: 'FRAGMENTED', title: 'Unified', desc: 'Policies apply to all model types — in Domino or not — with end-to-end visibility through dashboards.' },
+                ];
+                cards.forEach((card, i) => {
+                    const cx = 0.7 + i * 4.1;
+                    s2.addShape(pptx.shapes.ROUNDED_RECTANGLE, { x: cx, y: 2.4, w: 3.8, h: 3.8, fill: { color: bgSurface }, rectRadius: 0.1 });
+                    s2.addText(card.old, { x: cx + 0.3, y: 2.7, w: 3.2, fontSize: 10, fontFace: 'Arial', color: textMuted, strike: true });
+                    s2.addText(card.title, { x: cx + 0.3, y: 3.2, w: 3.2, fontSize: 22, fontFace: 'Arial', color: accent, bold: true });
+                    s2.addText(card.desc, { x: cx + 0.3, y: 4.0, w: 3.2, fontSize: 13, fontFace: 'Arial', color: textMuted, lineSpacingMultiple: 1.3 });
+                });
+
+                // --- Slide 3: Three Perspectives ---
+                const s3 = pptx.addSlide();
+                s3.background = { color: bgSurface };
+                s3.addText('WHAT WE\'LL SEE TODAY', { x: 0.7, y: 1.5, w: 11.93, fontSize: 12, fontFace: 'Arial', color: accent, bold: true, spacing: 200, align: 'center' });
+                s3.addText('Three Perspectives in Action', { x: 0.7, y: 2.2, w: 11.93, fontSize: 32, fontFace: 'Arial', color: textBlack, bold: true, align: 'center' });
+
+                const personas = [
+                    { icon: '👩‍💻', label: 'Practitioner' },
+                    { icon: '✅', label: 'Validator' },
+                    { icon: '🛡️', label: 'Risk Manager' },
+                ];
+                personas.forEach((p, i) => {
+                    const px = 3.2 + i * 2.8;
+                    s3.addText(p.icon, { x: px, y: 3.5, w: 1.5, fontSize: 36, align: 'center' });
+                    s3.addText(p.label, { x: px - 0.25, y: 4.6, w: 2, fontSize: 14, fontFace: 'Arial', color: textBlack, bold: true, align: 'center' });
+                });
+
+                // --- Slide 4: Closing ---
+                const s4 = pptx.addSlide();
+                s4.background = { color: bgWhite };
+                s4.addText('WHAT WE\'VE SEEN', { x: 0.7, y: 0.5, w: 11, fontSize: 12, fontFace: 'Arial', color: accent, bold: true, spacing: 200 });
+                s4.addText('Governance That\'s Built In, Not Bolted On', { x: 0.7, y: 1.1, w: 11, fontSize: 26, fontFace: 'Arial', color: textBlack, bold: true });
+
+                const summaryCards = [
+                    { role: 'PRACTITIONER', title: 'Evidence as You Work', desc: 'Attach evidence without leaving your tools.' },
+                    { role: 'VALIDATOR', title: 'Single-Pane Review', desc: 'Review and approve from one linked notebook.' },
+                    { role: 'RISK MANAGER', title: 'Define Once, Enforce Everywhere', desc: 'Policies for all models with a complete audit trail.' },
+                ];
+                summaryCards.forEach((card, i) => {
+                    const cx = 0.7 + i * 4.1;
+                    s4.addShape(pptx.shapes.ROUNDED_RECTANGLE, { x: cx, y: 2.2, w: 3.8, h: 2.8, fill: { color: bgSurface }, rectRadius: 0.1 });
+                    s4.addText(card.role, { x: cx + 0.3, y: 2.5, w: 3.2, fontSize: 10, fontFace: 'Arial', color: accent, bold: true, spacing: 150 });
+                    s4.addText(card.title, { x: cx + 0.3, y: 3.0, w: 3.2, fontSize: 18, fontFace: 'Arial', color: textBlack, bold: true });
+                    s4.addText(card.desc, { x: cx + 0.3, y: 3.7, w: 3.2, fontSize: 13, fontFace: 'Arial', color: textMuted });
+                });
+
+                // Outcome bar
+                s4.addShape(pptx.shapes.ROUNDED_RECTANGLE, { x: 0.7, y: 5.5, w: 11.93, h: 0.8, fill: { color: bgSurface }, rectRadius: 0.05, line: { color: accent, width: 0.5, dashType: 'solid' } });
+                s4.addText([
+                    { text: 'Validation cycles: ', options: { fontSize: 18, fontFace: 'Arial', color: textBlack, bold: true } },
+                    { text: 'Months', options: { fontSize: 18, fontFace: 'Arial', color: textMuted } },
+                    { text: ' → ', options: { fontSize: 18, fontFace: 'Arial', color: textBlack } },
+                    { text: 'Days', options: { fontSize: 18, fontFace: 'Arial', color: accent, bold: true } },
+                ], { x: 0.7, y: 5.5, w: 11.93, h: 0.8, align: 'center', valign: 'middle' });
+
+                await pptx.writeFile({ fileName: 'Domino-Governance-Video-Slides.pptx' });
+            } catch (e) {
+                console.error('PPT export failed:', e);
+                alert('PPT export failed. See console for details.');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'PPT';
+            }
+        }
+    </script>
+</body>
+</html>
