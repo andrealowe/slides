@@ -632,8 +632,8 @@
 </head>
 <body>
 
-    <!-- Export buttons -->
-    <div class="export-btns">
+    <!-- Export buttons (hidden) -->
+    <div class="export-btns" style="display:none;">
         <button class="export-btn" onclick="document.querySelectorAll('.slide').forEach(s=>s.classList.add('visible'));setTimeout(()=>window.print(),100)" title="Export to PDF">PDF</button>
         <button class="export-btn" id="pptBtn" onclick="exportToPPT()" title="Download as PowerPoint">PPT</button>
     </div>
