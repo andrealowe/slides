@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Production from the Start</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+
+    <style>
+        /* ===========================================
+           DOMINO LIGHT CORPORATE THEME
+           Video series continuity — matches the other
+           four RWE slides.
+           =========================================== */
+        :root {
+            --font-display: 'New Grotesk', 'Inter', 'Helvetica Neue', sans-serif;
+            --font-body: 'New Grotesk', 'Inter', 'Helvetica Neue', sans-serif;
+            --font-mono: 'New Grotesk Mono', 'JetBrains Mono', monospace;
+
+            --bg-primary: #FFFFFF;
+            --bg-surface: #F1F0F4;
+            --text-primary: #000000;
+            --text-secondary: #3C3A42;
+            --text-muted: #777384;
+            --accent: #FF6543;
+            --divider: rgba(0, 0, 0, 0.08);
+
+            --domino-gradient: linear-gradient(135deg, #FF9421 0%, #F8475E 34%, #F020B3 66%, #8636F8 100%);
+
+            --eyebrow-size: clamp(0.95rem, 1.3vw, 1.35rem);
+            --headline-size: clamp(2.75rem, 6.2vw, 6rem);
+            --subline-size: clamp(1.1rem, 1.7vw, 1.6rem);
+
+            --slide-padding: clamp(2rem, 6vw, 6rem);
+            --content-gap: clamp(1rem, 2.5vw, 2.5rem);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; overflow-x: hidden; }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            overflow: hidden;
+            padding: var(--slide-padding);
+            display: grid;
+            grid-template-columns: 1.15fr 1fr;
+            align-items: center;
+            gap: clamp(2rem, 5vw, 5rem);
+            position: relative;
+        }
+
+        .text-block {
+            display: flex;
+            flex-direction: column;
+            gap: var(--content-gap);
+            max-width: 100%;
+        }
+
+        .eyebrow {
+            font-family: var(--font-mono);
+            font-size: var(--eyebrow-size);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 0.75em;
+        }
+
+        .eyebrow::before {
+            content: '';
+            width: clamp(2rem, 3vw, 3rem);
+            height: 2px;
+            background: var(--accent);
+            display: inline-block;
+        }
+
+        .headline {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: var(--headline-size);
+            line-height: 1.02;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+        }
+
+        .headline .accent-line {
+            display: block;
+            background: var(--domino-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .subline {
+            font-family: var(--font-body);
+            font-size: var(--subline-size);
+            font-weight: 400;
+            line-height: 1.4;
+            color: var(--text-secondary);
+            max-width: 34ch;
+        }
+
+        /* ===========================================
+           ILLUSTRATION - three Part 11 controls:
+           Panel 1: Validated Systems (check-in-box)
+           Panel 2: Audit Trail (log entries)
+           Panel 3: Authority Checks (lock)
+           =========================================== */
+        .illustration {
+            width: 100%;
+            height: 100%;
+            max-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .illustration svg {
+            width: 100%;
+            height: auto;
+            max-height: 75vh;
+            overflow: visible;
+        }
+
+        /* Checkmark draws in */
+        .check-path {
+            stroke-dasharray: 50;
+            stroke-dashoffset: 50;
+            animation: draw-check 5s ease-in-out infinite;
+        }
+        @keyframes draw-check {
+            0% { stroke-dashoffset: 50; }
+            40%, 90% { stroke-dashoffset: 0; }
+            100% { stroke-dashoffset: 0; }
+        }
+
+        /* Audit log entries appear in sequence */
+        .log-entry {
+            animation: log-appear 6s ease-in-out infinite;
+        }
+        @keyframes log-appear {
+            0%, 100% { opacity: 0.25; }
+            50% { opacity: 1; }
+        }
+
+        /* Lock click — subtle pulse on keyhole */
+        .lock-pulse {
+            animation: lock-pulse 3s ease-in-out infinite;
+            transform-origin: center;
+            transform-box: fill-box;
+        }
+        @keyframes lock-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.55; }
+        }
+
+        /* ===========================================
+           CORNER LOGO + EXPORT BUTTONS
+           =========================================== */
+        .corner-logo {
+            position: fixed;
+            bottom: clamp(1rem, 2vw, 1.75rem);
+            left: clamp(1.5rem, 3vw, 2.5rem);
+            height: clamp(22px, 2.4vw, 32px);
+            width: auto;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        .export-btns {
+            position: fixed;
+            top: 12px;
+            right: 12px;
+            z-index: 1001;
+            display: flex;
+            gap: 6px;
+        }
+
+        .export-btn {
+            background: rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: rgba(0, 0, 0, 0.4);
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            padding: 5px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            backdrop-filter: blur(8px);
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .export-btn:hover {
+            background: rgba(0, 0, 0, 0.08);
+            color: rgba(0, 0, 0, 0.7);
+        }
+
+        .export-btn:disabled { opacity: 0.5; cursor: wait; }
+
+        /* ===========================================
+           RESPONSIVE
+           =========================================== */
+        @media (max-width: 900px) {
+            .slide {
+                grid-template-columns: 1fr;
+                gap: clamp(1rem, 3vw, 2rem);
+            }
+            .illustration { max-height: 35vh; }
+            .illustration svg { max-height: 30vh; }
+        }
+
+        @media (max-height: 700px) {
+            :root {
+                --slide-padding: clamp(1.5rem, 4vw, 3rem);
+                --headline-size: clamp(2.25rem, 5.5vw, 4.5rem);
+            }
+        }
+
+        @media (max-height: 600px) {
+            :root {
+                --slide-padding: clamp(1rem, 3vw, 2rem);
+                --headline-size: clamp(1.75rem, 5vw, 3.5rem);
+                --subline-size: clamp(0.9rem, 1.5vw, 1.25rem);
+                --content-gap: clamp(0.75rem, 1.5vw, 1.25rem);
+            }
+        }
+
+        @media print {
+            .export-btns, .corner-logo { display: none !important; }
+            html, body { height: auto; background: #FFFFFF !important; }
+            .slide { height: 100vh; overflow: hidden; break-inside: avoid; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .check-path, .log-entry, .lock-pulse { animation: none; }
+            .check-path { stroke-dashoffset: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="export-btns">
+        <button class="export-btn" onclick="document.querySelectorAll('.slide').forEach(s=>s.classList.add('visible'));setTimeout(()=>window.print(),100)" title="Export to PDF">PDF</button>
+        <button class="export-btn" id="pptBtn" onclick="exportToPPT()" title="Download as PowerPoint">PPT</button>
+    </div>
+
+    <img src="domino-logo.png" class="corner-logo" alt="Domino">
+
+    <section class="slide">
+        <div class="text-block">
+            <div class="eyebrow">21 CFR Part 11</div>
+            <h1 class="headline">
+                Not a research prototype.
+                <span class="accent-line">Production from the start.</span>
+            </h1>
+            <p class="subline">
+                Production-grade in regulated environments — not research-grade with compliance bolted on.
+            </p>
+        </div>
+
+        <!-- Three Part 11 controls as labeled panels:
+             1. Validated Systems — check-in-box
+             2. Secure Audit Trail — log entries
+             3. Authority Checks — lock -->
+        <div class="illustration" aria-hidden="true">
+            <svg viewBox="0 0 520 420" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="domino-grad-5" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#FF9421"/>
+                        <stop offset="34%" stop-color="#F8475E"/>
+                        <stop offset="66%" stop-color="#F020B3"/>
+                        <stop offset="100%" stop-color="#8636F8"/>
+                    </linearGradient>
+                </defs>
+
+                <!-- Unifying top header bar -->
+                <line x1="60" y1="75" x2="460" y2="75"
+                      stroke="url(#domino-grad-5)" stroke-width="2" opacity="0.8"/>
+                <text x="260" y="60"
+                      font-family="'JetBrains Mono', monospace"
+                      font-size="11" font-weight="500" letter-spacing="3"
+                      text-anchor="middle" fill="#000">PRODUCTION CONTROLS</text>
+
+                <!-- ===== PANEL 1: VALIDATED SYSTEMS ===== -->
+                <g>
+                    <!-- Check-in-box icon -->
+                    <rect x="75" y="140" width="64" height="64" rx="6"
+                          fill="none" stroke="#000" stroke-width="1.8"/>
+                    <path class="check-path"
+                          d="M 87,172 L 102,186 L 128,156"
+                          fill="none" stroke="#FF6543" stroke-width="3.5"
+                          stroke-linecap="round" stroke-linejoin="round"/>
+                </g>
+                <text x="107" y="248"
+                      font-family="'JetBrains Mono', monospace"
+                      font-size="12" font-weight="500" letter-spacing="1.8"
+                      text-anchor="middle" fill="#000">VALIDATED</text>
+                <text x="107" y="270"
+                      font-family="'JetBrains Mono', monospace"
+                      font-size="10" letter-spacing="1.5"
+                      text-anchor="middle" fill="#777384">SYSTEMS</text>
+
+                <!-- ===== PANEL 2: SECURE AUDIT TRAIL ===== -->
+                <g>
+                    <!-- Stacked log entries: timestamp dot + entry line -->
+                    <!-- Entry 1 (oldest, faded) -->
+                    <g class="log-entry" style="animation-delay: 0s;">
+                        <circle cx="230" cy="148" r="3" fill="#000"/>
+                        <line x1="242" y1="148" x2="300" y2="148"
+                              stroke="#000" stroke-width="1.8" stroke-linecap="round"/>
+                    </g>
+                    <!-- Entry 2 -->
+                    <g class="log-entry" style="animation-delay: -1.5s;">
+                        <circle cx="230" cy="170" r="3" fill="#000"/>
+                        <line x1="242" y1="170" x2="290" y2="170"
+                              stroke="#000" stroke-width="1.8" stroke-linecap="round"/>
+                    </g>
+                    <!-- Entry 3 -->
+                    <g class="log-entry" style="animation-delay: -3s;">
+                        <circle cx="230" cy="192" r="3" fill="#000"/>
+                        <line x1="242" y1="192" x2="305" y2="192"
+                              stroke="#000" stroke-width="1.8" stroke-linecap="round"/>
+                    </g>
+                    <!-- Entry 4 (newest, orange highlight) -->
+                    <g class="log-entry" style="animation-delay: -4.5s;">
+                        <circle cx="230" cy="214" r="3.5" fill="#FF6543"/>
+                        <line x1="242" y1="214" x2="295" y2="214"
+                              stroke="#FF6543" stroke-width="2" stroke-linecap="round"/>
+                    </g>
+                </g>
+                <text x="267" y="248"
+                      font-family="'JetBrains Mono', monospace"
+                      font-size="12" font-weight="500" letter-spacing="1.8"
+                      text-anchor="middle" fill="#000">AUDIT TRAIL</text>
+                <text x="267" y="270"
+                      font-family="'JetBrains Mono', monospace"
+                      font-size="10" letter-spacing="1.5"
+                      text-anchor="middle" fill="#777384">SECURE</text>
+
+                <!-- ===== PANEL 3: AUTHORITY CHECKS ===== -->
+                <g>
+                    <!-- Lock body -->
+                    <rect x="382" y="155" width="62" height="50" rx="5"
+                          fill="none" stroke="#000" stroke-width="1.8"/>
+                    <!-- Lock shackle (rounded top arc) -->
+                    <path d="M 394,155 L 394,140 A 19,19 0 0 1 432,140 L 432,155"
+                          fill="none" stroke="#000" stroke-width="1.8"
+                          stroke-linecap="round"/>
+                    <!-- Keyhole -->
+                    <circle class="lock-pulse" cx="413" cy="175" r="4" fill="#FF6543"/>
+                    <rect class="lock-pulse" x="411" y="175" width="4" height="12"
+                          fill="#FF6543" style="animation-delay: -0.2s;"/>
+                </g>
+                <text x="413" y="248"
+                      font-family="'JetBrains Mono', monospace"
+                      font-size="12" font-weight="500" letter-spacing="1.8"
+                      text-anchor="middle" fill="#000">AUTHORITY</text>
+                <text x="413" y="270"
+                      font-family="'JetBrains Mono', monospace"
+                      font-size="10" letter-spacing="1.5"
+                      text-anchor="middle" fill="#777384">EVERY ACTION</text>
+
+                <!-- Bottom unifying tag -->
+                <text x="260" y="335"
+                      font-family="'JetBrains Mono', monospace"
+                      font-size="10" letter-spacing="2"
+                      text-anchor="middle" fill="#777384">ELECTRONIC RECORDS · REGULATED WORK</text>
+            </svg>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/gh/gitbrent/PptxGenJS@3.12.0/dist/pptxgen.bundle.js"></script>
+    <script>
+        async function exportToPPT() {
+            const btn = document.getElementById('pptBtn');
+            btn.disabled = true;
+            btn.textContent = '...';
+            try {
+                const pptx = new PptxGenJS();
+                pptx.defineLayout({ name: 'HD', width: 13.333, height: 7.5 });
+                pptx.layout = 'HD';
+
+                const s = pptx.addSlide();
+                s.background = { color: 'FFFFFF' };
+
+                s.addText('21 CFR PART 11', {
+                    x: 0.7, y: 2.0, w: 7, h: 0.4,
+                    fontSize: 14, fontFace: 'Arial',
+                    color: 'FF6543', bold: true, charSpacing: 3,
+                });
+
+                s.addText([
+                    { text: 'Not a research prototype.\n', options: { color: '000000' } },
+                    { text: 'Production from the start.', options: { color: 'F020B3' } },
+                ], {
+                    x: 0.7, y: 2.6, w: 7, h: 2.4,
+                    fontSize: 46, fontFace: 'Arial', bold: true,
+                });
+
+                s.addText(
+                    'Production-grade in regulated environments — not research-grade with compliance bolted on.',
+                    {
+                        x: 0.7, y: 5.2, w: 7, h: 1.4,
+                        fontSize: 18, fontFace: 'Arial', color: '3C3A42',
+                    }
+                );
+
+                s.addText('VALIDATED · AUDIT TRAIL · AUTHORITY', {
+                    x: 8.0, y: 4.0, w: 5.0, h: 0.5,
+                    fontSize: 12, fontFace: 'Arial',
+                    color: '777384', charSpacing: 2,
+                });
+
+                await pptx.writeFile({ fileName: 'rwe-part11-slide.pptx' });
+            } catch (e) {
+                console.error('PPT export failed:', e);
+                alert('PPT export failed. See console.');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'PPT';
+            }
+        }
+    </script>
+</body>
+</html>
