@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Structural Mismatch</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+
+    <style>
+        /* ===========================================
+           DOMINO LIGHT CORPORATE THEME
+           Video-optimized: oversized type, minimal text,
+           abstract line-art illustration.
+           Matches rwe-translation-slide.html
+           =========================================== */
+        :root {
+            --font-display: 'New Grotesk', 'Inter', 'Helvetica Neue', sans-serif;
+            --font-body: 'New Grotesk', 'Inter', 'Helvetica Neue', sans-serif;
+            --font-mono: 'New Grotesk Mono', 'JetBrains Mono', monospace;
+
+            --bg-primary: #FFFFFF;
+            --bg-surface: #F1F0F4;
+            --text-primary: #000000;
+            --text-secondary: #3C3A42;
+            --text-muted: #777384;
+            --accent: #FF6543;
+            --divider: rgba(0, 0, 0, 0.08);
+
+            --domino-gradient: linear-gradient(135deg, #FF9421 0%, #F8475E 34%, #F020B3 66%, #8636F8 100%);
+
+            --eyebrow-size: clamp(0.95rem, 1.3vw, 1.35rem);
+            --headline-size: clamp(2.75rem, 6.2vw, 6rem);
+            --subline-size: clamp(1.1rem, 1.7vw, 1.6rem);
+
+            --slide-padding: clamp(2rem, 6vw, 6rem);
+            --content-gap: clamp(1rem, 2.5vw, 2.5rem);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; overflow-x: hidden; }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            overflow: hidden;
+            padding: var(--slide-padding);
+            display: grid;
+            grid-template-columns: 1.15fr 1fr;
+            align-items: center;
+            gap: clamp(2rem, 5vw, 5rem);
+            position: relative;
+        }
+
+        .text-block {
+            display: flex;
+            flex-direction: column;
+            gap: var(--content-gap);
+            max-width: 100%;
+        }
+
+        .eyebrow {
+            font-family: var(--font-mono);
+            font-size: var(--eyebrow-size);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 0.75em;
+        }
+
+        .eyebrow::before {
+            content: '';
+            width: clamp(2rem, 3vw, 3rem);
+            height: 2px;
+            background: var(--accent);
+            display: inline-block;
+        }
+
+        .headline {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: var(--headline-size);
+            line-height: 1.02;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+        }
+
+        .headline .accent-line {
+            display: block;
+            background: var(--domino-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .subline {
+            font-family: var(--font-body);
+            font-size: var(--subline-size);
+            font-weight: 400;
+            line-height: 1.4;
+            color: var(--text-secondary);
+            max-width: 34ch;
+        }
+
+        /* ===========================================
+           ILLUSTRATION (right) - pace mismatch:
+           Top track = many questions (dense, gradient)
+           Bottom track = few answers (sparse, black)
+           =========================================== */
+        .illustration {
+            width: 100%;
+            height: 100%;
+            max-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .illustration svg {
+            width: 100%;
+            height: auto;
+            max-height: 75vh;
+            overflow: visible;
+        }
+
+        /* Subtle pulsing on the question dots suggesting pile-up */
+        .q-dot {
+            animation: pulse 3s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.55; }
+        }
+
+        /* Animated dashed drop-off lines suggesting requests falling away */
+        .dropoff {
+            stroke-dasharray: 3 5;
+            animation: drift 6s linear infinite;
+        }
+        @keyframes drift {
+            to { stroke-dashoffset: -80; }
+        }
+
+        /* ===========================================
+           CORNER LOGO + EXPORT BUTTONS
+           =========================================== */
+        .corner-logo {
+            position: fixed;
+            bottom: clamp(1rem, 2vw, 1.75rem);
+            left: clamp(1.5rem, 3vw, 2.5rem);
+            height: clamp(22px, 2.4vw, 32px);
+            width: auto;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        .export-btns {
+            position: fixed;
+            top: 12px;
+            right: 12px;
+            z-index: 1001;
+            display: flex;
+            gap: 6px;
+        }
+
+        .export-btn {
+            background: rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: rgba(0, 0, 0, 0.4);
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            padding: 5px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            backdrop-filter: blur(8px);
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .export-btn:hover {
+            background: rgba(0, 0, 0, 0.08);
+            color: rgba(0, 0, 0, 0.7);
+        }
+
+        .export-btn:disabled { opacity: 0.5; cursor: wait; }
+
+        /* ===========================================
+           RESPONSIVE
+           =========================================== */
+        @media (max-width: 900px) {
+            .slide {
+                grid-template-columns: 1fr;
+                gap: clamp(1rem, 3vw, 2rem);
+            }
+            .illustration { max-height: 35vh; }
+            .illustration svg { max-height: 30vh; }
+        }
+
+        @media (max-height: 700px) {
+            :root {
+                --slide-padding: clamp(1.5rem, 4vw, 3rem);
+                --headline-size: clamp(2.25rem, 5.5vw, 4.5rem);
+            }
+        }
+
+        @media (max-height: 600px) {
+            :root {
+                --slide-padding: clamp(1rem, 3vw, 2rem);
+                --headline-size: clamp(1.75rem, 5vw, 3.5rem);
+                --subline-size: clamp(0.9rem, 1.5vw, 1.25rem);
+                --content-gap: clamp(0.75rem, 1.5vw, 1.25rem);
+            }
+        }
+
+        @media print {
+            .export-btns, .corner-logo { display: none !important; }
+            html, body { height: auto; background: #FFFFFF !important; }
+            .slide { height: 100vh; overflow: hidden; break-inside: avoid; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .q-dot, .dropoff { animation: none; }
+            .dropoff { stroke-dasharray: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="export-btns">
+        <button class="export-btn" onclick="document.querySelectorAll('.slide').forEach(s=>s.classList.add('visible'));setTimeout(()=>window.print(),100)" title="Export to PDF">PDF</button>
+        <button class="export-btn" id="pptBtn" onclick="exportToPPT()" title="Download as PowerPoint">PPT</button>
+    </div>
+
+    <img src="domino-logo.png" class="corner-logo" alt="Domino">
+
+    <section class="slide">
+        <div class="text-block">
+            <div class="eyebrow">The Bottleneck</div>
+            <h1 class="headline">
+                Not a workflow problem.
+                <span class="accent-line">A structural mismatch.</span>
+            </h1>
+            <p class="subline">
+                Dozens of requests a year. Months per study. Most never get answered — they're deferred, scoped down, or sent out.
+            </p>
+        </div>
+
+        <!-- Pace mismatch illustration:
+             Top: many question dots (gradient, dense, pulsing)
+             Bottom: few answer dots (black, sparse)
+             Drop-off lines between show requests falling away -->
+        <div class="illustration" aria-hidden="true">
+            <svg viewBox="0 0 520 420" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="domino-grad-2" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#FF9421"/>
+                        <stop offset="34%" stop-color="#F8475E"/>
+                        <stop offset="66%" stop-color="#F020B3"/>
+                        <stop offset="100%" stop-color="#8636F8"/>
+                    </linearGradient>
+                </defs>
+
+                <!-- TOP LABEL -->
+                <text x="40" y="70"
+                      font-family="'JetBrains Mono', monospace"
+                      font-size="12" font-weight="500" letter-spacing="2"
+                      fill="#000">QUESTIONS</text>
+                <text x="40" y="92"
+                      font-family="'JetBrains Mono', monospace"
+                      font-size="10" letter-spacing="1.5"
+                      fill="#777384">DOZENS PER YEAR</text>
+
+                <!-- TOP TRACK -->
+                <line x1="40" y1="130" x2="480" y2="130"
+                      stroke="#000" stroke-width="1" opacity="0.25"/>
+
+                <!-- TOP DOTS (14, dense, gradient) -->
+                <g fill="url(#domino-grad-2)">
+                    <circle class="q-dot" cx="55"  cy="130" r="7" style="animation-delay: 0s;"/>
+                    <circle class="q-dot" cx="88"  cy="130" r="7" style="animation-delay: 0.2s;"/>
+                    <circle class="q-dot" cx="121" cy="130" r="7" style="animation-delay: 0.4s;"/>
+                    <circle class="q-dot" cx="154" cy="130" r="7" style="animation-delay: 0.6s;"/>
+                    <circle class="q-dot" cx="187" cy="130" r="7" style="animation-delay: 0.8s;"/>
+                    <circle class="q-dot" cx="220" cy="130" r="7" style="animation-delay: 1.0s;"/>
+                    <circle class="q-dot" cx="253" cy="130" r="7" style="animation-delay: 1.2s;"/>
+                    <circle class="q-dot" cx="286" cy="130" r="7" style="animation-delay: 1.4s;"/>
+                    <circle class="q-dot" cx="319" cy="130" r="7" style="animation-delay: 1.6s;"/>
+                    <circle class="q-dot" cx="352" cy="130" r="7" style="animation-delay: 1.8s;"/>
+                    <circle class="q-dot" cx="385" cy="130" r="7" style="animation-delay: 2.0s;"/>
+                    <circle class="q-dot" cx="418" cy="130" r="7" style="animation-delay: 2.2s;"/>
+                    <circle class="q-dot" cx="451" cy="130" r="7" style="animation-delay: 2.4s;"/>
+                </g>
+
+                <!-- DROP-OFF LINES — most questions don't reach answers -->
+                <g stroke="#777384" stroke-width="1" fill="none" opacity="0.35">
+                    <!-- Lines that fade partway down (deferred / scoped / sent out) -->
+                    <path class="dropoff" d="M 55,138 L 55,195"/>
+                    <path class="dropoff" d="M 88,138 L 88,210" style="animation-delay: -1s;"/>
+                    <path class="dropoff" d="M 154,138 L 154,200" style="animation-delay: -2s;"/>
+                    <path class="dropoff" d="M 187,138 L 187,215" style="animation-delay: -3s;"/>
+                    <path class="dropoff" d="M 253,138 L 253,205" style="animation-delay: -4s;"/>
+                    <path class="dropoff" d="M 286,138 L 286,195" style="animation-delay: -5s;"/>
+                    <path class="dropoff" d="M 319,138 L 319,220" style="animation-delay: -2.5s;"/>
+                    <path class="dropoff" d="M 352,138 L 352,200" style="animation-delay: -3.5s;"/>
+                    <path class="dropoff" d="M 385,138 L 385,210" style="animation-delay: -1.5s;"/>
+                    <path class="dropoff" d="M 451,138 L 451,195" style="animation-delay: -4.5s;"/>
+                </g>
+
+                <!-- FEW QUESTIONS THAT ACTUALLY MAKE IT THROUGH (solid lines) -->
+                <g stroke="#000" stroke-width="1.5" fill="none" opacity="0.8">
+                    <path d="M 121,138 L 121,280"/>
+                    <path d="M 220,138 L 220,280"/>
+                    <path d="M 418,138 L 418,280"/>
+                </g>
+
+                <!-- BOTTOM TRACK -->
+                <line x1="40" y1="290" x2="480" y2="290"
+                      stroke="#000" stroke-width="1" opacity="0.25"/>
+
+                <!-- BOTTOM DOTS (3, sparse, black) -->
+                <g fill="#000">
+                    <circle cx="121" cy="290" r="7"/>
+                    <circle cx="220" cy="290" r="7"/>
+                    <circle cx="418" cy="290" r="7"/>
+                </g>
+
+                <!-- BOTTOM LABEL -->
+                <text x="40" y="335"
+                      font-family="'JetBrains Mono', monospace"
+                      font-size="12" font-weight="500" letter-spacing="2"
+                      fill="#000">ANSWERS</text>
+                <text x="40" y="357"
+                      font-family="'JetBrains Mono', monospace"
+                      font-size="10" letter-spacing="1.5"
+                      fill="#777384">MONTHS EACH</text>
+            </svg>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/gh/gitbrent/PptxGenJS@3.12.0/dist/pptxgen.bundle.js"></script>
+    <script>
+        async function exportToPPT() {
+            const btn = document.getElementById('pptBtn');
+            btn.disabled = true;
+            btn.textContent = '...';
+            try {
+                const pptx = new PptxGenJS();
+                pptx.defineLayout({ name: 'HD', width: 13.333, height: 7.5 });
+                pptx.layout = 'HD';
+
+                const s = pptx.addSlide();
+                s.background = { color: 'FFFFFF' };
+
+                s.addText('THE BOTTLENECK', {
+                    x: 0.7, y: 2.0, w: 7, h: 0.4,
+                    fontSize: 14, fontFace: 'Arial',
+                    color: 'FF6543', bold: true, charSpacing: 3,
+                });
+
+                s.addText([
+                    { text: 'Not a workflow problem.\n', options: { color: '000000' } },
+                    { text: 'A structural mismatch.', options: { color: 'F020B3' } },
+                ], {
+                    x: 0.7, y: 2.6, w: 7, h: 2.2,
+                    fontSize: 48, fontFace: 'Arial', bold: true,
+                });
+
+                s.addText(
+                    "Dozens of requests a year. Months per study. Most never get answered — they're deferred, scoped down, or sent out.",
+                    {
+                        x: 0.7, y: 5.0, w: 7, h: 1.4,
+                        fontSize: 18, fontFace: 'Arial', color: '3C3A42',
+                    }
+                );
+
+                s.addText('QUESTIONS   →   ANSWERS', {
+                    x: 8.0, y: 4.0, w: 5.0, h: 0.5,
+                    fontSize: 12, fontFace: 'Arial',
+                    color: '777384', charSpacing: 2,
+                });
+
+                await pptx.writeFile({ fileName: 'rwe-bottleneck-slide.pptx' });
+            } catch (e) {
+                console.error('PPT export failed:', e);
+                alert('PPT export failed. See console.');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'PPT';
+            }
+        }
+    </script>
+</body>
+</html>
