@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Translation is the Bottleneck</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+
+    <style>
+        /* ===========================================
+           DOMINO LIGHT CORPORATE THEME
+           Video-optimized: oversized type, minimal text,
+           abstract line-art illustration.
+           =========================================== */
+        :root {
+            --font-display: 'New Grotesk', 'Inter', 'Helvetica Neue', sans-serif;
+            --font-body: 'New Grotesk', 'Inter', 'Helvetica Neue', sans-serif;
+            --font-mono: 'New Grotesk Mono', 'JetBrains Mono', monospace;
+
+            --bg-primary: #FFFFFF;
+            --bg-surface: #F1F0F4;
+            --text-primary: #000000;
+            --text-secondary: #3C3A42;
+            --text-muted: #777384;
+            --accent: #FF6543;
+            --divider: rgba(0, 0, 0, 0.08);
+
+            --domino-gradient: linear-gradient(135deg, #FF9421 0%, #F8475E 34%, #F020B3 66%, #8636F8 100%);
+
+            /* Video-sized typography — intentionally larger than standard */
+            --eyebrow-size: clamp(0.95rem, 1.3vw, 1.35rem);
+            --headline-size: clamp(2.75rem, 6.2vw, 6rem);
+            --subline-size: clamp(1.1rem, 1.7vw, 1.6rem);
+
+            --slide-padding: clamp(2rem, 6vw, 6rem);
+            --content-gap: clamp(1rem, 2.5vw, 2.5rem);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body { height: 100%; overflow-x: hidden; }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ===========================================
+           SLIDE - locked to viewport
+           =========================================== */
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            overflow: hidden;
+            padding: var(--slide-padding);
+            display: grid;
+            grid-template-columns: 1.15fr 1fr;
+            align-items: center;
+            gap: clamp(2rem, 5vw, 5rem);
+            position: relative;
+        }
+
+        /* ===========================================
+           TEXT CONTENT (left)
+           =========================================== */
+        .text-block {
+            display: flex;
+            flex-direction: column;
+            gap: var(--content-gap);
+            max-width: 100%;
+        }
+
+        .eyebrow {
+            font-family: var(--font-mono);
+            font-size: var(--eyebrow-size);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 0.75em;
+        }
+
+        .eyebrow::before {
+            content: '';
+            width: clamp(2rem, 3vw, 3rem);
+            height: 2px;
+            background: var(--accent);
+            display: inline-block;
+        }
+
+        .headline {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: var(--headline-size);
+            line-height: 1.02;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+        }
+
+        .headline .accent-line {
+            display: block;
+            background: var(--domino-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .subline {
+            font-family: var(--font-body);
+            font-size: var(--subline-size);
+            font-weight: 400;
+            line-height: 1.4;
+            color: var(--text-secondary);
+            max-width: 32ch;
+        }
+
+        /* ===========================================
+           ILLUSTRATION (right) - abstract line art
+           "Translation": chaotic question -> iteration -> structured output
+           =========================================== */
+        .illustration {
+            width: 100%;
+            height: 100%;
+            max-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .illustration svg {
+            width: 100%;
+            height: auto;
+            max-height: 75vh;
+            overflow: visible;
+        }
+
+        /* Animated gradient flow on the strokes */
+        .flow-path {
+            stroke-dasharray: 6 8;
+            animation: flow 8s linear infinite;
+        }
+
+        @keyframes flow {
+            to { stroke-dashoffset: -140; }
+        }
+
+        /* ===========================================
+           CORNER LOGO (bottom-left)
+           =========================================== */
+        .corner-logo {
+            position: fixed;
+            bottom: clamp(1rem, 2vw, 1.75rem);
+            left: clamp(1.5rem, 3vw, 2.5rem);
+            height: clamp(22px, 2.4vw, 32px);
+            width: auto;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        /* ===========================================
+           EXPORT BUTTONS (top-right)
+           Light theme variant
+           =========================================== */
+        .export-btns {
+            position: fixed;
+            top: 12px;
+            right: 12px;
+            z-index: 1001;
+            display: flex;
+            gap: 6px;
+        }
+
+        .export-btn {
+            background: rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: rgba(0, 0, 0, 0.4);
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            padding: 5px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            backdrop-filter: blur(8px);
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .export-btn:hover {
+            background: rgba(0, 0, 0, 0.08);
+            color: rgba(0, 0, 0, 0.7);
+        }
+
+        .export-btn:disabled { opacity: 0.5; cursor: wait; }
+
+        /* ===========================================
+           RESPONSIVE
+           =========================================== */
+        @media (max-width: 900px) {
+            .slide {
+                grid-template-columns: 1fr;
+                gap: clamp(1rem, 3vw, 2rem);
+            }
+            .illustration { max-height: 35vh; }
+            .illustration svg { max-height: 30vh; }
+        }
+
+        @media (max-height: 700px) {
+            :root {
+                --slide-padding: clamp(1.5rem, 4vw, 3rem);
+                --headline-size: clamp(2.25rem, 5.5vw, 4.5rem);
+            }
+        }
+
+        @media (max-height: 600px) {
+            :root {
+                --slide-padding: clamp(1rem, 3vw, 2rem);
+                --headline-size: clamp(1.75rem, 5vw, 3.5rem);
+                --subline-size: clamp(0.9rem, 1.5vw, 1.25rem);
+                --content-gap: clamp(0.75rem, 1.5vw, 1.25rem);
+            }
+        }
+
+        /* Print / PDF */
+        @media print {
+            .export-btns, .corner-logo { display: none !important; }
+            html, body { height: auto; background: #FFFFFF !important; }
+            .slide { height: 100vh; overflow: hidden; break-inside: avoid; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        }
+
+        /* Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            .flow-path { animation: none; stroke-dasharray: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Export buttons -->
+    <div class="export-btns">
+        <button class="export-btn" onclick="document.querySelectorAll('.slide').forEach(s=>s.classList.add('visible'));setTimeout(()=>window.print(),100)" title="Export to PDF">PDF</button>
+        <button class="export-btn" id="pptBtn" onclick="exportToPPT()" title="Download as PowerPoint">PPT</button>
+    </div>
+
+    <!-- Domino logo -->
+    <img src="domino-logo.png" class="corner-logo" alt="Domino">
+
+    <!-- The slide -->
+    <section class="slide">
+        <div class="text-block">
+            <div class="eyebrow">Real-World Evidence</div>
+            <h1 class="headline">
+                Speed isn't the bottleneck.
+                <span class="accent-line">Translation is.</span>
+            </h1>
+            <p class="subline">
+                Turning a stakeholder question into a defensible study design takes full iteration support — not just faster tooling.
+            </p>
+        </div>
+
+        <!-- Abstract line-art illustration:
+             Left cluster = unstructured question (scattered nodes)
+             Middle = iteration loops (the "translation" work)
+             Right cluster = defensible structure (aligned grid) -->
+        <div class="illustration" aria-hidden="true">
+            <svg viewBox="0 0 520 420" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="domino-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#FF9421"/>
+                        <stop offset="34%" stop-color="#F8475E"/>
+                        <stop offset="66%" stop-color="#F020B3"/>
+                        <stop offset="100%" stop-color="#8636F8"/>
+                    </linearGradient>
+                    <marker id="arrowhead" viewBox="0 0 10 10" refX="8" refY="5"
+                            markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#000"/>
+                    </marker>
+                </defs>
+
+                <!-- LEFT: unstructured stakeholder question (scattered dots + question curve) -->
+                <g stroke="#000" stroke-width="1.5" fill="none" stroke-linecap="round">
+                    <circle cx="55"  cy="120" r="3.5" fill="#000"/>
+                    <circle cx="95"  cy="90"  r="3.5" fill="#000"/>
+                    <circle cx="75"  cy="180" r="3.5" fill="#000"/>
+                    <circle cx="115" cy="155" r="3.5" fill="#000"/>
+                    <circle cx="50"  cy="235" r="3.5" fill="#000"/>
+                    <circle cx="100" cy="260" r="3.5" fill="#000"/>
+                    <circle cx="135" cy="215" r="3.5" fill="#000"/>
+
+                    <!-- Thin connective scribble suggesting an ambiguous question -->
+                    <path d="M 55,120 Q 80,70 115,155 T 100,260" stroke="#777384" stroke-width="1" opacity="0.5"/>
+                </g>
+
+                <!-- LABEL: stakeholder question -->
+                <text x="90" y="320"
+                      font-family="'JetBrains Mono', monospace"
+                      font-size="11" letter-spacing="1.5"
+                      text-anchor="middle" fill="#777384">
+                    THE QUESTION
+                </text>
+
+                <!-- MIDDLE: iteration loops — the translation work (gradient strokes) -->
+                <g fill="none" stroke="url(#domino-grad)" stroke-width="2.5" stroke-linecap="round">
+                    <!-- Three looping arcs showing iteration -->
+                    <path class="flow-path" d="M 170,180 C 210,100 290,100 330,180"/>
+                    <path class="flow-path" d="M 170,210 C 210,290 290,290 330,210" style="animation-delay: -2s;"/>
+                    <path class="flow-path" d="M 175,195 C 225,195 275,195 325,195" style="animation-delay: -4s;"/>
+                </g>
+
+                <!-- Directional arrow indicating translation flow -->
+                <g stroke="#000" stroke-width="1.5" fill="none" stroke-linecap="round">
+                    <line x1="150" y1="195" x2="175" y2="195"/>
+                    <line x1="325" y1="195" x2="355" y2="195" marker-end="url(#arrowhead)"/>
+                </g>
+
+                <!-- LABEL: translation -->
+                <text x="250" y="320"
+                      font-family="'JetBrains Mono', monospace"
+                      font-size="11" letter-spacing="1.5"
+                      text-anchor="middle" fill="#000">
+                    TRANSLATION
+                </text>
+
+                <!-- RIGHT: defensible study design (aligned grid of nodes) -->
+                <g stroke="#000" stroke-width="1.5" fill="none">
+                    <!-- Grid frame -->
+                    <rect x="385" y="110" width="110" height="170" rx="4"
+                          stroke="#000" stroke-width="1.5" fill="none"/>
+
+                    <!-- Grid dots (3x4 arrangement) -->
+                    <g fill="#000">
+                        <circle cx="410" cy="140" r="3.5"/>
+                        <circle cx="440" cy="140" r="3.5"/>
+                        <circle cx="470" cy="140" r="3.5"/>
+                        <circle cx="410" cy="180" r="3.5"/>
+                        <circle cx="440" cy="180" r="3.5" fill="#FF6543"/>
+                        <circle cx="470" cy="180" r="3.5"/>
+                        <circle cx="410" cy="220" r="3.5"/>
+                        <circle cx="440" cy="220" r="3.5"/>
+                        <circle cx="470" cy="220" r="3.5"/>
+                        <circle cx="410" cy="255" r="3.5"/>
+                        <circle cx="440" cy="255" r="3.5"/>
+                        <circle cx="470" cy="255" r="3.5"/>
+                    </g>
+
+                    <!-- Connecting lines showing structure -->
+                    <g stroke="#777384" stroke-width="0.75" opacity="0.6">
+                        <line x1="410" y1="140" x2="470" y2="140"/>
+                        <line x1="410" y1="180" x2="470" y2="180"/>
+                        <line x1="410" y1="220" x2="470" y2="220"/>
+                        <line x1="410" y1="255" x2="470" y2="255"/>
+                        <line x1="410" y1="140" x2="410" y2="255"/>
+                        <line x1="440" y1="140" x2="440" y2="255"/>
+                        <line x1="470" y1="140" x2="470" y2="255"/>
+                    </g>
+                </g>
+
+                <!-- LABEL: defensible design -->
+                <text x="440" y="320"
+                      font-family="'JetBrains Mono', monospace"
+                      font-size="11" letter-spacing="1.5"
+                      text-anchor="middle" fill="#777384">
+                    DEFENSIBLE DESIGN
+                </text>
+            </svg>
+        </div>
+    </section>
+
+    <!-- PPT export -->
+    <script src="https://cdn.jsdelivr.net/gh/gitbrent/PptxGenJS@3.12.0/dist/pptxgen.bundle.js"></script>
+    <script>
+        async function exportToPPT() {
+            const btn = document.getElementById('pptBtn');
+            btn.disabled = true;
+            btn.textContent = '...';
+            try {
+                const pptx = new PptxGenJS();
+                pptx.defineLayout({ name: 'HD', width: 13.333, height: 7.5 });
+                pptx.layout = 'HD';
+
+                const s = pptx.addSlide();
+                s.background = { color: 'FFFFFF' };
+
+                // Eyebrow
+                s.addText('REAL-WORLD EVIDENCE', {
+                    x: 0.7, y: 2.0, w: 7, h: 0.4,
+                    fontSize: 14, fontFace: 'Arial',
+                    color: 'FF6543', bold: true,
+                    charSpacing: 3,
+                });
+
+                // Main headline
+                s.addText([
+                    { text: "Speed isn't the bottleneck.\n", options: { color: '000000' } },
+                    { text: 'Translation is.', options: { color: 'F020B3' } },
+                ], {
+                    x: 0.7, y: 2.6, w: 7, h: 2.2,
+                    fontSize: 48, fontFace: 'Arial',
+                    bold: true,
+                });
+
+                // Subline
+                s.addText(
+                    'Turning a stakeholder question into a defensible study design takes full iteration support — not just faster tooling.',
+                    {
+                        x: 0.7, y: 5.0, w: 7, h: 1.2,
+                        fontSize: 18, fontFace: 'Arial',
+                        color: '3C3A42',
+                    }
+                );
+
+                // Illustration label cluster (simplified for PPT)
+                s.addText('THE QUESTION   →   TRANSLATION   →   DEFENSIBLE DESIGN', {
+                    x: 8.0, y: 4.0, w: 5.0, h: 0.5,
+                    fontSize: 12, fontFace: 'Arial',
+                    color: '777384', charSpacing: 2,
+                });
+
+                await pptx.writeFile({ fileName: 'rwe-translation-slide.pptx' });
+            } catch (e) {
+                console.error('PPT export failed:', e);
+                alert('PPT export failed. See console.');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'PPT';
+            }
+        }
+    </script>
+</body>
+</html>
