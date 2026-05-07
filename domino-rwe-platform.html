@@ -244,9 +244,8 @@ h3 { font-size:var(--sz-h3);   font-weight:700; line-height:1.12; color:var(--te
         .slide-title{
             font-size:clamp(1.8rem,4.5vw,3.8rem);
             font-weight:700;letter-spacing:-.035em;line-height:1.08;
-            color:var(--text);opacity:0;
+            color:var(--text);
             margin-bottom:clamp(0.3rem,0.7vh,0.6rem);
-            animation:fadeUp .55s var(--ease) .3s forwards;
         }
 
         /* ---- Diagram ---- */
@@ -258,7 +257,7 @@ h3 { font-size:var(--sz-h3);   font-weight:700; line-height:1.12; color:var(--te
             border:1px solid rgba(76,230,181,0.22);
             border-radius:14px;
             background:rgba(76,230,181,0.025);
-            padding:clamp(0.4rem,0.75vh,0.65rem) clamp(0.4rem,0.75vw,0.65rem);
+            padding:clamp(0.8rem,1.5vh,1.4rem) clamp(0.6rem,1.2vw,1rem);
             box-shadow:0 0 48px rgba(76,230,181,0.07);
         }
 
@@ -266,11 +265,11 @@ h3 { font-size:var(--sz-h3);   font-weight:700; line-height:1.12; color:var(--te
         .row3>*{flex:1;min-width:0}
 
         /* ---- Connector rows ---- */
-        .conn-row{display:flex;gap:var(--gap);width:100%;height:clamp(14px,2vh,24px)}
+        .conn-row{display:flex;gap:var(--gap);width:100%;height:clamp(32px,6vh,60px)}
         .conn-row>*{flex:1;display:flex;justify-content:center}
         .conn-line{
             width:1.5px;height:100%;background:rgba(255,255,255,.14);
-            transform-origin:top center;transform:scaleY(0);opacity:0;
+            transform-origin:top center;opacity:1;
         }
 
         /* ---- Persona nodes (centered) ---- */
@@ -280,7 +279,6 @@ h3 { font-size:var(--sz-h3);   font-weight:700; line-height:1.12; color:var(--te
             gap:0.45em;
             padding:clamp(.5rem,1vh,.85rem) clamp(.6rem,1.2vw,1rem);
             background:var(--surface);border:1px solid var(--border);border-radius:8px;
-            opacity:0;
         }
         .persona-avatar{
             width:clamp(30px,3.2vw,42px);height:clamp(30px,3.2vw,42px);
@@ -298,17 +296,16 @@ h3 { font-size:var(--sz-h3);   font-weight:700; line-height:1.12; color:var(--te
         /* ---- AI Gateway band ---- */
         .gateway-band{
             width:100%;
-            border:1.5px solid rgba(76,230,181,0);
-            border-radius:12px;background:rgba(76,230,181,0);
-            padding:clamp(.5rem,1vh,.8rem) clamp(.5rem,1vw,.8rem);
+            border:1.5px solid rgba(76,230,181,.5);
+            border-radius:12px;background:rgba(76,230,181,.05);
+            padding:clamp(.65rem,1.3vh,1.1rem) clamp(.5rem,1vw,.8rem);
             display:flex;flex-direction:column;align-items:center;gap:.55em;
-            animation:gwBorderIn .55s var(--ease) 4.65s forwards;
+            box-shadow:0 0 28px rgba(76,230,181,.1),inset 0 0 30px rgba(76,230,181,.04);
         }
         /* Label + chips: stacked, centered */
         .gw-header{
             display:flex;flex-direction:column;align-items:center;gap:.4em;
-            width:100%;opacity:0;
-            animation:fadeUp .4s var(--ease) 4.75s forwards;
+            width:100%;
         }
         .gw-name{
             font-family:var(--mono);font-size:clamp(.65rem,1.1vw,.88rem);
@@ -330,7 +327,7 @@ h3 { font-size:var(--sz-h3);   font-weight:700; line-height:1.12; color:var(--te
             display:flex;align-items:center;justify-content:center;gap:.5em;
             padding:clamp(.6rem,1.2vh,1rem);
             background:var(--llm-grad);border-radius:8px;
-            opacity:0;transform:scale(.85);
+
         }
         .llm-label{
             font-family:var(--mono);font-size:clamp(.75rem,1.3vw,1rem);
@@ -344,7 +341,6 @@ h3 { font-size:var(--sz-h3);   font-weight:700; line-height:1.12; color:var(--te
             gap:0.45em;
             padding:clamp(.5rem,1vh,.85rem) clamp(.6rem,1.2vw,1rem);
             background:var(--surface);border:1px solid var(--border);border-radius:8px;
-            opacity:0;
         }
         .output-icon{
             width:clamp(26px,2.8vw,36px);height:clamp(26px,2.8vw,36px);
@@ -361,9 +357,8 @@ h3 { font-size:var(--sz-h3);   font-weight:700; line-height:1.12; color:var(--te
 
         /* ---- Platform section ---- */
         .platform-wrap{
-            width:100%;opacity:0;
+            width:100%;
             margin-top:clamp(1.2rem,2.4vh,2rem);
-            animation:fadeUp .6s var(--ease) 6.2s forwards;
         }
         /* "Domino Platform" label above the bar */
         .platform-label{
@@ -375,15 +370,12 @@ h3 { font-size:var(--sz-h3);   font-weight:700; line-height:1.12; color:var(--te
             -webkit-text-fill-color:transparent;
             background-clip:text;
             margin-bottom:clamp(.3rem,.55vh,.5rem);
-            opacity:0;
-            animation:fadeUp .5s var(--ease) 6.25s forwards;
         }
 
         /* Gradient bar -- acts as divider between diagram and platform layer */
         .platform-bar{
-            width:0%;height:3px;background:var(--rev-grad);
+            width:100%;height:3px;background:var(--rev-grad);
             border-radius:2px;
-            animation:barGrow .9s var(--ease) 6.2s forwards;
         }
         /* Primitives row */
         .primitives{
@@ -398,7 +390,7 @@ h3 { font-size:var(--sz-h3);   font-weight:700; line-height:1.12; color:var(--te
             background:rgba(76,230,181,0.12);
             font-family:var(--mono);font-size:clamp(.72rem,1.15vw,.92rem);
             color:rgba(255,255,255,.92);white-space:nowrap;
-            opacity:0;flex-shrink:0;
+            opacity:1;flex-shrink:0;
         }
         .primitive svg{
             width:15px;height:15px;
@@ -412,51 +404,7 @@ h3 { font-size:var(--sz-h3);   font-weight:700; line-height:1.12; color:var(--te
             filter:brightness(0) invert(1);opacity:.55;
         }
 
-        /* ---- Keyframes ---- */
-        @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-        @keyframes popIn{from{opacity:0;transform:scale(.82)}to{opacity:1;transform:scale(1)}}
-        @keyframes lineReveal{from{opacity:0;transform:scaleY(0)}to{opacity:1;transform:scaleY(1)}}
-        @keyframes gwBorderIn{
-            from{border-color:rgba(76,230,181,0);background:rgba(76,230,181,0);box-shadow:none}
-            to{border-color:rgba(76,230,181,.5);background:rgba(76,230,181,.05);box-shadow:0 0 28px rgba(76,230,181,.1),inset 0 0 30px rgba(76,230,181,.04)}
-        }
-        @keyframes barGrow{from{width:0%}to{width:100%}}
-
-        /* ---- Sequential lane animations ---- */
-        .persona-row>:nth-child(1){animation:fadeUp .5s var(--ease) .8s  forwards}
-        .conn-row.top>:nth-child(1) .conn-line{animation:lineReveal .35s var(--ease) 1.25s forwards}
-        .gw-llms>:nth-child(1){animation:popIn .5s var(--bounce) 1.55s forwards}
-
-        .persona-row>:nth-child(2){animation:fadeUp .5s var(--ease) 2.1s  forwards}
-        .conn-row.top>:nth-child(2) .conn-line{animation:lineReveal .35s var(--ease) 2.55s forwards}
-        .gw-llms>:nth-child(2){animation:popIn .5s var(--bounce) 2.85s forwards}
-
-        .persona-row>:nth-child(3){animation:fadeUp .5s var(--ease) 3.4s  forwards}
-        .conn-row.top>:nth-child(3) .conn-line{animation:lineReveal .35s var(--ease) 3.85s forwards}
-        .gw-llms>:nth-child(3){animation:popIn .5s var(--bounce) 4.15s forwards}
-
-        .conn-row.bot>:nth-child(1) .conn-line{animation:lineReveal .3s var(--ease) 5.25s forwards}
-        .conn-row.bot>:nth-child(2) .conn-line{animation:lineReveal .3s var(--ease) 5.3s  forwards}
-        .conn-row.bot>:nth-child(3) .conn-line{animation:lineReveal .3s var(--ease) 5.35s forwards}
-
-        .output-row>:nth-child(1){animation:fadeUp .5s var(--ease) 5.5s  forwards}
-        .output-row>:nth-child(2){animation:fadeUp .5s var(--ease) 5.6s  forwards}
-        .output-row>:nth-child(3){animation:fadeUp .5s var(--ease) 5.7s  forwards}
-
-        .primitive:nth-child(1){animation:fadeUp .38s var(--ease) 6.5s  forwards}
-        .primitive:nth-child(2){animation:fadeUp .38s var(--ease) 6.62s forwards}
-        .primitive:nth-child(3){animation:fadeUp .38s var(--ease) 6.74s forwards}
-        .primitive:nth-child(4){animation:fadeUp .38s var(--ease) 6.86s forwards}
-        .primitive:nth-child(5){animation:fadeUp .38s var(--ease) 6.98s forwards}
-
         @media(max-height:700px){.conn-row{height:12px}}
-        @media(prefers-reduced-motion:reduce){
-            *{animation-duration:.01ms!important;animation-delay:0s!important}
-            .persona-node,.llm-node,.output-node,.conn-line,.gw-header,
-            .platform-wrap,.platform-label,.primitive,.slide-title{opacity:1!important;transform:none!important}
-            .gateway-band{border-color:rgba(76,230,181,.5)!important;background:rgba(76,230,181,.05)!important}
-            .platform-bar{width:100%!important}
-        }
     
 
 /* ════ PLATFORM LAYER CARDS ════ */
@@ -494,7 +442,7 @@ h3 { font-size:var(--sz-h3);   font-weight:700; line-height:1.12; color:var(--te
 <section class="slide">
 
     <header>
-        <h1 class="slide-title">Three LLMs, Three Workflows. One Platform.</h1>
+        <h1 class="slide-title">Three LLMs, three workflows, one platform.</h1>
     </header>
 
     <div class="diagram">
@@ -507,11 +455,11 @@ h3 { font-size:var(--sz-h3);   font-weight:700; line-height:1.12; color:var(--te
             </div>
             <div class="persona-node">
                 <div class="persona-avatar"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-3.87 3.58-7 8-7s8 3.13 8 7"/></svg></div>
-                <span class="persona-name">Data Analyst</span>
+                <span class="persona-name">App Builder</span>
             </div>
             <div class="persona-node">
                 <div class="persona-avatar"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-3.87 3.58-7 8-7s8 3.13 8 7"/></svg></div>
-                <span class="persona-name">Consumer</span>
+                <span class="persona-name">Stakeholder</span>
             </div>
         </div>
 
@@ -527,8 +475,8 @@ h3 { font-size:var(--sz-h3);   font-weight:700; line-height:1.12; color:var(--te
             <div class="gw-header">
                 <span class="gw-name">AI Gateway</span>
                 <div class="gw-chips">
-                    <span class="gw-chip">Cost</span>
-                    <span class="gw-chip">Audit</span>
+                    <span class="gw-chip">Cost Control</span>
+                    <span class="gw-chip">Audit Trails</span>
                     <span class="gw-chip">Access Control</span>
                 </div>
             </div>
@@ -550,15 +498,15 @@ h3 { font-size:var(--sz-h3);   font-weight:700; line-height:1.12; color:var(--te
         <div class="row3 output-row">
             <div class="output-node">
                 <div class="output-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="5" cy="12" r="2.5"/><circle cx="12" cy="12" r="2.5"/><circle cx="19" cy="12" r="2.5"/><line x1="7.5" y1="12" x2="9.5" y2="12"/><line x1="14.5" y1="12" x2="16.5" y2="12"/></svg></div>
-                <span class="output-name">Data Pipeline</span>
+                <span class="output-name">Cohort Pipeline</span>
             </div>
             <div class="output-node">
                 <div class="output-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><circle cx="7" cy="6.5" r="1" fill="currentColor" stroke="none"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></div>
-                <span class="output-name">Application</span>
+                <span class="output-name">Developed App</span>
             </div>
             <div class="output-node">
-                <div class="output-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v5c0 1.66 3.58 3 8 3s8-1.34 8-3V6"/><path d="M4 11v5c0 1.66 3.58 3 8 3s8-1.34 8-3v-5"/></svg></div>
-                <span class="output-name">SQL Queries</span>
+                <div class="output-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/><path d="M20 17v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3"/></svg></div>
+                <span class="output-name">Deployed App</span>
             </div>
         </div>
 
@@ -568,8 +516,8 @@ h3 { font-size:var(--sz-h3);   font-weight:700; line-height:1.12; color:var(--te
             <div class="platform-bar"></div>
             <div class="primitives">
             <div class="primitive">
-                <svg viewBox="0 0 16 16" fill="none" stroke-width="1.3" stroke-linecap="round"><ellipse cx="8" cy="5" rx="5" ry="2"/><path d="M3 5v6c0 1.1 2.24 2 5 2s5-.9 5-2V5"/></svg>
-                Data Assets
+                <svg viewBox="0 0 16 16" fill="none" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="1.5" width="10" height="13" rx="1.5"/><line x1="5.5" y1="5" x2="10.5" y2="5"/><line x1="5.5" y1="7.5" x2="10.5" y2="7.5"/><line x1="5.5" y1="10" x2="8.5" y2="10"/></svg>
+                Approval Workflows
             </div>
             <div class="primitive">
                 <svg viewBox="0 0 16 16" fill="none" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="1,5 4,2 7,5"/><path d="M4 2v8a4 4 0 0 0 4 4"/><polyline points="15,11 12,14 9,11"/><path d="M12 14V6a4 4 0 0 0-4-4"/></svg>
@@ -584,8 +532,8 @@ h3 { font-size:var(--sz-h3);   font-weight:700; line-height:1.12; color:var(--te
                 Validated Software
             </div>
             <div class="primitive">
-                <svg viewBox="0 0 16 16" fill="none" stroke-width="1.3" stroke-linecap="round"><circle cx="8" cy="3" r="1.5"/><circle cx="3" cy="13" r="1.5"/><circle cx="13" cy="13" r="1.5"/><line x1="8" y1="4.5" x2="3" y2="11.5"/><line x1="8" y1="4.5" x2="13" y2="11.5"/><line x1="4.3" y1="13" x2="11.5" y2="13"/></svg>
-                Flow Orchestration
+                <svg viewBox="0 0 16 16" fill="none" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="7" width="7" height="6.5" rx="1.2"/><path d="M6 7V5a2 2 0 0 1 4 0v2"/><circle cx="8" cy="10.2" r="1" fill="rgba(76,230,181,1)" stroke="none"/></svg>
+                Autoscaling
             </div>
         </div>
     </div>
@@ -706,7 +654,7 @@ h3 { font-size:var(--sz-h3);   font-weight:700; line-height:1.12; color:var(--te
 <!-- SLIDE 4: Dev Experience -->
 <section class="slide" id="s6">
   <div class="inner">
-    <h2 class="reveal d1">The analyst describes the study population. <span class='hl-teal'>The platform does the rest.</span></h2>
+    <h2 class="reveal d1">Stay in the science, <span class='hl-teal'>skip the plumbing.</span></h2>
     <div class="plat-row reveal d2" style="margin-top:clamp(2rem,4vh,4rem);">
       <div class="plat-card" style="
           background:var(--bg-s);
@@ -739,7 +687,7 @@ h3 { font-size:var(--sz-h3);   font-weight:700; line-height:1.12; color:var(--te
 <!-- SLIDE 5: Governance -->
 <section class="slide" id="s7">
   <div class="inner">
-    <h2 class="reveal d1">Three pillars that make it hold up <span class='hl-teal'>in production.</span></h2>
+    <h2 class="reveal d1"><span class='hl-teal'>Built in,</span> not bolted on.</h2>
     <div class="plat-row reveal d2" style="margin-top:clamp(2rem,4vh,4rem);">
       <div class="plat-card" style="
           background:var(--bg-s);
