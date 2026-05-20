@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Risk Management Framework | Domino</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+    <style>
+        :root {
+            /* Domino Light Corporate palette */
+            --bg-primary: #FFFFFF;
+            --bg-surface: #F1F0F4;
+            --bg-soft: #FAFAFB;
+            --text-primary: #000000;
+            --text-secondary: #3C3A42;
+            --text-muted: #777384;
+            --accent: #FF6543;
+            --accent-purple: #8636F8;
+            --accent-blue: #2C6EF2;
+            --divider: rgba(0, 0, 0, 0.08);
+            --divider-strong: rgba(0, 0, 0, 0.14);
+            --domino-gradient: linear-gradient(135deg, #FF9421 0%, #F8475E 34%, #F020B3 66%, #8636F8 100%);
+
+            --font-display: 'New Grotesk', 'Inter', 'Helvetica Neue', sans-serif;
+            --font-body: 'New Grotesk', 'Inter', 'Helvetica Neue', sans-serif;
+            --font-mono: 'New Grotesk Mono', 'JetBrains Mono', monospace;
+
+            /* Video-scale typography — generous sizes for screen capture */
+            --title-size: clamp(3rem, 7.5vw, 7rem);
+            --h2-size: clamp(2.5rem, 5.5vw, 5rem);
+            --eyebrow-size: clamp(0.95rem, 1.4vw, 1.4rem);
+            --body-size: clamp(1.25rem, 2vw, 2rem);
+            --body-large-size: clamp(1.5rem, 2.4vw, 2.5rem);
+            --small-size: clamp(0.95rem, 1.2vw, 1.25rem);
+
+            --slide-padding: clamp(2.5rem, 5vw, 6rem);
+            --content-gap: clamp(1.5rem, 2.5vw, 3rem);
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body { height: 100%; overflow-x: hidden; }
+        html {
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            -webkit-font-smoothing: antialiased;
+            font-feature-settings: 'ss01', 'cv11';
+            letter-spacing: -0.01em;
+        }
+
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            padding: var(--slide-padding);
+            scroll-snap-align: start;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            max-height: 100%;
+            overflow: hidden;
+            width: 100%;
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        .eyebrow {
+            font-family: var(--font-mono);
+            font-size: var(--eyebrow-size);
+            font-weight: 500;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            margin-bottom: clamp(1.25rem, 2vw, 2rem);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75em;
+        }
+        .eyebrow::before {
+            content: '';
+            width: 2.5em;
+            height: 2px;
+            background: var(--accent);
+        }
+
+        h1 {
+            font-family: var(--font-display);
+            font-size: var(--title-size);
+            font-weight: 700;
+            line-height: 1.02;
+            letter-spacing: -0.035em;
+            color: var(--text-primary);
+        }
+
+        h2 {
+            font-family: var(--font-display);
+            font-size: var(--h2-size);
+            font-weight: 700;
+            line-height: 1.05;
+            letter-spacing: -0.03em;
+            color: var(--text-primary);
+            margin-bottom: clamp(2rem, 3.5vw, 3.5rem);
+            max-width: 18ch;
+        }
+
+        h1 .grad {
+            background: var(--domino-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        p.lead {
+            font-size: var(--body-large-size);
+            line-height: 1.35;
+            color: var(--text-secondary);
+            font-weight: 400;
+            letter-spacing: -0.015em;
+            max-width: 28ch;
+        }
+
+        /* Corner gradient line art motif */
+        .corner-motif {
+            position: absolute;
+            bottom: -6vw;
+            right: -6vw;
+            width: 40vw;
+            height: 40vw;
+            opacity: 0.55;
+            pointer-events: none;
+        }
+        .corner-motif svg { width: 100%; height: 100%; }
+
+        /* Domino logo bottom-left */
+        .corner-logo {
+            position: fixed;
+            bottom: 24px;
+            left: 32px;
+            height: 28px;
+            width: auto;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        /* ============================================
+           SLIDE 1 — TITLE
+           ============================================ */
+        .slide-title h1 {
+            font-size: clamp(3.5rem, 9vw, 9rem);
+            max-width: 16ch;
+        }
+        .slide-title .subtitle {
+            margin-top: clamp(1.5rem, 2.5vw, 2.5rem);
+            font-size: var(--body-large-size);
+            color: var(--text-secondary);
+            max-width: 30ch;
+            font-weight: 400;
+            line-height: 1.35;
+        }
+        .slide-title .meta {
+            position: absolute;
+            bottom: clamp(3rem, 6vw, 6rem);
+            left: var(--slide-padding);
+            display: flex;
+            gap: clamp(2rem, 4vw, 4rem);
+            align-items: baseline;
+        }
+        .slide-title .meta .label {
+            font-family: var(--font-mono);
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            display: block;
+            margin-bottom: 0.4em;
+        }
+        .slide-title .meta .value {
+            font-size: var(--body-size);
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        /* ============================================
+           SLIDE 2 — NIST 4 FUNCTIONS (2x2 grid)
+           ============================================ */
+        .nist-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 0;
+            border-top: 1px solid var(--divider-strong);
+        }
+        .nist-cell {
+            padding: clamp(1.5rem, 3vw, 3rem);
+            display: grid;
+            grid-template-columns: auto 1fr;
+            grid-template-rows: auto auto;
+            column-gap: clamp(1.25rem, 2.5vw, 2.5rem);
+            row-gap: clamp(0.5rem, 1vw, 1rem);
+            align-items: start;
+            position: relative;
+        }
+        .nist-cell:nth-child(odd) {
+            border-right: 1px solid var(--divider-strong);
+        }
+        .nist-cell:nth-child(-n+2) {
+            border-bottom: 1px solid var(--divider-strong);
+        }
+        .nist-cell .num {
+            grid-row: 1 / span 2;
+            font-family: var(--font-display);
+            font-size: clamp(3.5rem, 6vw, 6rem);
+            font-weight: 700;
+            line-height: 0.9;
+            letter-spacing: -0.04em;
+            background: var(--domino-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            align-self: center;
+        }
+        .nist-cell .heading-row {
+            display: flex;
+            align-items: center;
+            gap: clamp(0.75rem, 1.5vw, 1.25rem);
+        }
+        .nist-cell .icon {
+            width: clamp(1.75rem, 2.4vw, 2.25rem);
+            height: clamp(1.75rem, 2.4vw, 2.25rem);
+            color: var(--text-muted);
+            flex-shrink: 0;
+        }
+        .nist-cell h3 {
+            font-family: var(--font-display);
+            font-size: clamp(1.75rem, 2.6vw, 2.5rem);
+            font-weight: 700;
+            line-height: 1;
+            letter-spacing: -0.025em;
+        }
+        .nist-cell p {
+            font-size: clamp(1.15rem, 1.55vw, 1.5rem);
+            line-height: 1.4;
+            color: var(--text-secondary);
+        }
+
+        /* ============================================
+           SLIDE 3 — MANUAL REALITY (3 pain points)
+           ============================================ */
+        .pain-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: clamp(1rem, 1.6vw, 1.6rem);
+        }
+        .pain-card {
+            position: relative;
+            background: var(--bg-surface);
+            border-radius: 18px;
+            padding: clamp(1.75rem, 2.8vw, 2.75rem);
+            display: flex;
+            flex-direction: column;
+            gap: clamp(1rem, 1.6vw, 1.6rem);
+            min-height: clamp(18rem, 32vw, 26rem);
+            border: 1px solid var(--divider);
+            overflow: hidden;
+        }
+        .pain-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: var(--domino-gradient);
+        }
+        .pain-card .pain-stat {
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 4vw, 3.75rem);
+            font-weight: 700;
+            line-height: 1;
+            letter-spacing: -0.035em;
+            background: var(--domino-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .pain-card .icon-box {
+            position: absolute;
+            top: clamp(1.5rem, 2.4vw, 2.4rem);
+            right: clamp(1.5rem, 2.4vw, 2.4rem);
+            width: clamp(2.5rem, 3.8vw, 3.5rem);
+            height: clamp(2.5rem, 3.8vw, 3.5rem);
+            background: var(--bg-primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            border: 1px solid var(--divider);
+        }
+        .pain-card .icon-box svg {
+            width: 58%;
+            height: 58%;
+        }
+        .pain-card h3 {
+            font-family: var(--font-display);
+            font-size: clamp(1.5rem, 2.2vw, 2rem);
+            font-weight: 700;
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            max-width: 12ch;
+        }
+        .pain-card p {
+            font-size: clamp(1.05rem, 1.4vw, 1.35rem);
+            line-height: 1.4;
+            color: var(--text-secondary);
+            margin-top: auto;
+        }
+
+        /* ============================================
+           SLIDE 4 — DOMINO APPROACH (4 pillars in row)
+           ============================================ */
+        .approach-layout {
+            display: grid;
+            grid-template-columns: 5fr 7fr;
+            gap: clamp(2rem, 5vw, 5rem);
+            align-items: start;
+        }
+        .approach-intro h2 {
+            margin-bottom: clamp(1.25rem, 2vw, 2rem);
+        }
+        .approach-intro p.lead {
+            font-size: clamp(1.25rem, 1.7vw, 1.6rem);
+            line-height: 1.4;
+            color: var(--text-secondary);
+            max-width: 22ch;
+        }
+        .approach-features {
+            display: flex;
+            flex-direction: column;
+            border-top: 1px solid var(--divider-strong);
+        }
+        .approach-feature {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: clamp(1.25rem, 2vw, 2rem);
+            padding: clamp(1.25rem, 2vw, 2rem) 0;
+            border-bottom: 1px solid var(--divider-strong);
+            align-items: start;
+        }
+        .approach-feature .icon-box {
+            width: clamp(3rem, 4.2vw, 3.75rem);
+            height: clamp(3rem, 4.2vw, 3.75rem);
+            background: var(--bg-surface);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            border: 1px solid var(--divider);
+            flex-shrink: 0;
+        }
+        .approach-feature .icon-box svg {
+            width: 60%;
+            height: 60%;
+        }
+        .approach-feature .feature-body {
+            display: flex;
+            flex-direction: column;
+            gap: clamp(0.4rem, 0.7vw, 0.7rem);
+        }
+        .approach-feature h3 {
+            font-family: var(--font-display);
+            font-size: clamp(1.5rem, 2.2vw, 2.1rem);
+            font-weight: 700;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+        .approach-feature p {
+            font-size: clamp(1.15rem, 1.55vw, 1.5rem);
+            line-height: 1.4;
+            color: var(--text-secondary);
+        }
+
+        /* ============================================
+           SLIDE 5 — THREE PERSONAS
+           ============================================ */
+        .persona-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: clamp(1rem, 1.6vw, 1.6rem);
+        }
+        .persona {
+            padding: clamp(2.5rem, 3.5vw, 3.5rem) clamp(2rem, 3vw, 3rem);
+            border-radius: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: clamp(1.25rem, 2vw, 2rem);
+            min-height: clamp(22rem, 40vw, 32rem);
+            position: relative;
+            overflow: hidden;
+            --persona-accent: var(--accent);
+            --persona-tint: rgba(255, 101, 67, 0.07);
+            --persona-border: rgba(255, 101, 67, 0.22);
+            background: var(--persona-tint);
+            border: 1px solid var(--persona-border);
+        }
+        .persona.orange {
+            --persona-accent: var(--accent);
+            --persona-tint: rgba(255, 101, 67, 0.07);
+            --persona-border: rgba(255, 101, 67, 0.22);
+        }
+        .persona.purple {
+            --persona-accent: #8636F8;
+            --persona-tint: rgba(134, 54, 248, 0.06);
+            --persona-border: rgba(134, 54, 248, 0.22);
+        }
+        .persona.blue {
+            --persona-accent: #2C6EF2;
+            --persona-tint: rgba(44, 110, 242, 0.06);
+            --persona-border: rgba(44, 110, 242, 0.22);
+        }
+        .persona .role-icon {
+            width: clamp(4.5rem, 6.5vw, 6rem);
+            height: clamp(4.5rem, 6.5vw, 6rem);
+            background: var(--bg-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--persona-accent);
+            border: 1.5px solid var(--persona-accent);
+        }
+        .persona .role-icon svg {
+            width: 50%;
+            height: 50%;
+        }
+        .persona .role-label {
+            font-family: var(--font-mono);
+            font-size: clamp(0.95rem, 1.25vw, 1.2rem);
+            color: var(--persona-accent);
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            font-weight: 500;
+        }
+        .persona h3 {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 3vw, 2.75rem);
+            font-weight: 700;
+            line-height: 1;
+            letter-spacing: -0.025em;
+        }
+        .persona p {
+            font-size: clamp(1.25rem, 1.7vw, 1.6rem);
+            line-height: 1.4;
+            color: var(--text-secondary);
+        }
+
+        /* ============================================
+           SLIDE 6 — OUTCOME (months → days)
+           ============================================ */
+        /* Outcome slide: top-align content and add atmospheric backdrop */
+        .slide-outcome .slide-content {
+            justify-content: flex-start;
+            padding-top: clamp(2rem, 4vw, 4.5rem);
+            position: relative;
+            z-index: 1;
+        }
+        .slide-outcome .eyebrow {
+            margin-bottom: clamp(1.5rem, 2.5vw, 2.5rem);
+        }
+        .outcome-orb {
+            position: absolute;
+            top: -20%;
+            right: -15%;
+            width: 70vw;
+            height: 70vw;
+            max-width: 1100px;
+            max-height: 1100px;
+            background:
+                radial-gradient(circle at 35% 50%, rgba(248, 71, 94, 0.10) 0%, transparent 45%),
+                radial-gradient(circle at 65% 50%, rgba(134, 54, 248, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 50% 60%, rgba(255, 148, 33, 0.06) 0%, transparent 55%);
+            filter: blur(20px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .outcome-hero {
+            display: flex;
+            align-items: baseline;
+            justify-content: flex-start;
+            gap: clamp(2.5rem, 5vw, 5.5rem);
+            padding: clamp(1.5rem, 2.5vw, 2.5rem) 0 clamp(2.5rem, 4vw, 4rem);
+        }
+        .outcome-block {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .outcome-block .label {
+            font-family: var(--font-mono);
+            font-size: clamp(0.95rem, 1.25vw, 1.2rem);
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            margin-bottom: clamp(0.5rem, 1vw, 1rem);
+            font-weight: 500;
+        }
+        .outcome-block.now .label {
+            color: var(--accent);
+        }
+        .outcome-block .value {
+            font-family: var(--font-display);
+            font-weight: 700;
+            line-height: 1;
+            letter-spacing: -0.04em;
+            /* Extra room for descenders ("y" in "Days") with background-clip text */
+            padding-bottom: 0.12em;
+            margin-bottom: -0.12em;
+        }
+        .outcome-block.was .value {
+            font-size: clamp(3.5rem, 6.5vw, 6rem);
+            color: var(--text-muted);
+        }
+        .outcome-block.now .value {
+            font-size: clamp(6rem, 12vw, 11.5rem);
+            background: var(--domino-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .outcome-arrow {
+            color: var(--divider-strong);
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 5.5vw, 5rem);
+            font-weight: 200;
+            line-height: 1;
+            transform: translateY(0.15em);
+        }
+
+        /* Section header between hero and steps */
+        .outcome-section {
+            border-top: 1px solid var(--divider-strong);
+            padding-top: clamp(1.5rem, 2.5vw, 2.5rem);
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 2rem;
+            margin-bottom: clamp(1.5rem, 2.5vw, 2.5rem);
+        }
+        .outcome-section-label {
+            font-family: var(--font-mono);
+            font-size: clamp(1rem, 1.3vw, 1.3rem);
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            font-weight: 500;
+        }
+        .outcome-section-meta {
+            font-family: var(--font-mono);
+            font-size: clamp(0.85rem, 1.05vw, 1.05rem);
+            color: var(--text-muted);
+            letter-spacing: 0.12em;
+        }
+
+        .outcome-list {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: clamp(1.25rem, 1.8vw, 1.8rem);
+        }
+        .outcome-item {
+            display: flex;
+            flex-direction: column;
+            gap: clamp(0.75rem, 1.2vw, 1.2rem);
+            position: relative;
+        }
+        .outcome-item .step-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+        }
+        .outcome-item .step {
+            font-family: var(--font-display);
+            font-size: clamp(2.25rem, 3.5vw, 3.25rem);
+            font-weight: 700;
+            line-height: 1;
+            letter-spacing: -0.03em;
+            background: var(--domino-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .outcome-item .check {
+            width: clamp(1.5rem, 2vw, 1.85rem);
+            height: clamp(1.5rem, 2vw, 1.85rem);
+            color: var(--accent);
+            flex-shrink: 0;
+            stroke-width: 2.2;
+        }
+        .outcome-item .label {
+            font-family: var(--font-display);
+            font-size: clamp(1.35rem, 1.85vw, 1.8rem);
+            font-weight: 600;
+            line-height: 1.25;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+        }
+
+        /* ============================================
+           ANIMATION
+           ============================================ */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s var(--ease-out-expo),
+                        transform 0.7s var(--ease-out-expo);
+        }
+        .slide.visible .reveal { opacity: 1; transform: translateY(0); }
+        .slide.visible .reveal:nth-child(1) { transition-delay: 0.05s; }
+        .slide.visible .reveal:nth-child(2) { transition-delay: 0.18s; }
+        .slide.visible .reveal:nth-child(3) { transition-delay: 0.30s; }
+        .slide.visible .reveal:nth-child(4) { transition-delay: 0.42s; }
+        .slide.visible .reveal:nth-child(5) { transition-delay: 0.54s; }
+        .slide.visible .stagger > * {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s var(--ease-out-expo),
+                        transform 0.6s var(--ease-out-expo);
+        }
+        .slide.visible .stagger > *:nth-child(1) { transition-delay: 0.30s; opacity: 1; transform: translateY(0); }
+        .slide.visible .stagger > *:nth-child(2) { transition-delay: 0.42s; opacity: 1; transform: translateY(0); }
+        .slide.visible .stagger > *:nth-child(3) { transition-delay: 0.54s; opacity: 1; transform: translateY(0); }
+        .slide.visible .stagger > *:nth-child(4) { transition-delay: 0.66s; opacity: 1; transform: translateY(0); }
+
+        /* Responsive: shorter viewports */
+        @media (max-height: 800px) {
+            :root {
+                --slide-padding: clamp(2rem, 4vw, 4rem);
+                --title-size: clamp(2.5rem, 6vw, 5.5rem);
+                --h2-size: clamp(2rem, 4.5vw, 4rem);
+                --body-size: clamp(1.05rem, 1.7vw, 1.5rem);
+                --body-large-size: clamp(1.25rem, 2vw, 2rem);
+            }
+            .nist-card, .pillar { min-height: clamp(13rem, 25vw, 19rem); }
+            .pain-card { min-height: clamp(16rem, 28vw, 22rem); }
+            .persona { min-height: clamp(17rem, 30vw, 25rem); }
+        }
+
+        @media (max-height: 650px) {
+            :root {
+                --slide-padding: clamp(1.5rem, 3vw, 3rem);
+                --title-size: clamp(2rem, 5.5vw, 4.5rem);
+                --h2-size: clamp(1.75rem, 4vw, 3rem);
+                --body-size: clamp(0.95rem, 1.5vw, 1.25rem);
+                --body-large-size: clamp(1.1rem, 1.8vw, 1.6rem);
+                --content-gap: clamp(1rem, 1.8vw, 1.8rem);
+            }
+            h2 { margin-bottom: clamp(1.25rem, 2.5vw, 2.5rem); }
+        }
+
+        @media (max-width: 900px) {
+            .nist-grid, .pillar-row, .outcome-list { grid-template-columns: repeat(2, 1fr); }
+            .pain-row, .persona-row { grid-template-columns: 1fr; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.2s !important;
+            }
+            html { scroll-behavior: auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <img src="domino-logo.png" class="corner-logo" alt="Domino">
+
+    <!-- ====================================================
+         SLIDE 1 — TITLE
+         ==================================================== -->
+    <section class="slide slide-title">
+        <div class="slide-content">
+            <div class="eyebrow reveal">Domino for Public Sector</div>
+            <h1 class="reveal">AI Risk <span class="grad">Management</span> Framework</h1>
+            <p class="subtitle reveal">From policy document to enforceable workflow.</p>
+        </div>
+        <div class="corner-motif" aria-hidden="true">
+            <svg viewBox="0 0 600 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="g1" x1="0" y1="0" x2="600" y2="600" gradientUnits="userSpaceOnUse">
+                        <stop offset="0" stop-color="#FF9421"/>
+                        <stop offset="0.34" stop-color="#F8475E"/>
+                        <stop offset="0.66" stop-color="#F020B3"/>
+                        <stop offset="1" stop-color="#8636F8"/>
+                    </linearGradient>
+                </defs>
+                <circle cx="450" cy="450" r="260" stroke="url(#g1)" stroke-width="1.2"/>
+                <circle cx="450" cy="450" r="200" stroke="url(#g1)" stroke-width="1.2"/>
+                <circle cx="450" cy="450" r="140" stroke="url(#g1)" stroke-width="1.2"/>
+                <circle cx="450" cy="450" r="80" stroke="url(#g1)" stroke-width="1.2"/>
+                <path d="M450 60 L450 840" stroke="url(#g1)" stroke-width="1"/>
+                <path d="M60 450 L840 450" stroke="url(#g1)" stroke-width="1"/>
+            </svg>
+        </div>
+    </section>
+
+    <!-- ====================================================
+         SLIDE 2 — NIST AI RMF: FOUR FUNCTIONS
+         ==================================================== -->
+    <section class="slide">
+        <div class="slide-content">
+            <div class="eyebrow reveal">NIST AI Risk Management Framework</div>
+            <h2 class="reveal">Four functions for governing AI.</h2>
+
+            <div class="nist-grid stagger">
+                <div class="nist-cell">
+                    <span class="num">01</span>
+                    <div class="heading-row">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                            <path d="M9 12l2 2 4-4"/>
+                        </svg>
+                        <h3>Govern</h3>
+                    </div>
+                    <p>Culture, policies, and accountability for AI risk.</p>
+                </div>
+                <div class="nist-cell">
+                    <span class="num">02</span>
+                    <div class="heading-row">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 20l-6-3V5l6 3 6-3 6 3v12l-6-3-6 3z"/>
+                            <path d="M9 8v12"/><path d="M15 5v12"/>
+                        </svg>
+                        <h3>Map</h3>
+                    </div>
+                    <p>Identify context, stakeholders, and risks of the AI system.</p>
+                </div>
+                <div class="nist-cell">
+                    <span class="num">03</span>
+                    <div class="heading-row">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 21H4a1 1 0 01-1-1V3"/>
+                            <path d="M7 16l4-4 3 3 6-7"/>
+                        </svg>
+                        <h3>Measure</h3>
+                    </div>
+                    <p>Assess and track AI performance and risks with evidence.</p>
+                </div>
+                <div class="nist-cell">
+                    <span class="num">04</span>
+                    <div class="heading-row">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="4" y1="6" x2="20" y2="6"/>
+                            <line x1="4" y1="12" x2="20" y2="12"/>
+                            <line x1="4" y1="18" x2="20" y2="18"/>
+                            <circle cx="9" cy="6" r="2" fill="currentColor"/>
+                            <circle cx="16" cy="12" r="2" fill="currentColor"/>
+                            <circle cx="7" cy="18" r="2" fill="currentColor"/>
+                        </svg>
+                        <h3>Manage</h3>
+                    </div>
+                    <p>Prioritize and respond to risks across the AI lifecycle.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====================================================
+         SLIDE 3 — DOMINO APPROACH (4 PILLARS)
+         ==================================================== -->
+    <section class="slide">
+        <div class="slide-content">
+            <div class="eyebrow reveal">The Domino approach</div>
+
+            <div class="approach-layout">
+                <div class="approach-intro">
+                    <h2 class="reveal">Governance built into the workflow.</h2>
+                    <p class="lead reveal">Policy lives where the work happens, so accreditation is automatic, not bolted on.</p>
+                </div>
+
+                <div class="approach-features stagger">
+                    <div class="approach-feature">
+                        <div class="icon-box">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 2L4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4z"/>
+                                <path d="M9 12l2 2 4-4"/>
+                            </svg>
+                        </div>
+                        <div class="feature-body">
+                            <h3>Policy at the source.</h3>
+                            <p>Rules enforced where the work happens, not in a separate doc.</p>
+                        </div>
+                    </div>
+                    <div class="approach-feature">
+                        <div class="icon-box">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                                <polyline points="8 13 11 16 16 11"/>
+                            </svg>
+                        </div>
+                        <div class="feature-body">
+                            <h3>Evidence collected automatically.</h3>
+                            <p>Docs and artifacts captured from the codebase itself.</p>
+                        </div>
+                    </div>
+                    <div class="approach-feature">
+                        <div class="icon-box">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                                <circle cx="9" cy="7" r="4"/>
+                                <path d="M23 21v-2a4 4 0 00-3-3.87"/>
+                                <path d="M16 3.13a4 4 0 010 7.75"/>
+                            </svg>
+                        </div>
+                        <div class="feature-body">
+                            <h3>Real-time collaboration.</h3>
+                            <p>Validators and practitioners work together in one place.</p>
+                        </div>
+                    </div>
+                    <div class="approach-feature">
+                        <div class="icon-box">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                                <path d="M7 11V7a5 5 0 0110 0v4"/>
+                            </svg>
+                        </div>
+                        <div class="feature-body">
+                            <h3>Gated Deployments.</h3>
+                            <p>Policy becomes real. Unaccredited models cannot ship.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====================================================
+         SLIDE 5 — THREE PERSPECTIVES
+         ==================================================== -->
+    <section class="slide">
+        <div class="slide-content">
+            <div class="eyebrow reveal">In this demo</div>
+            <h2 class="reveal">Three perspectives.</h2>
+
+            <div class="persona-row stagger">
+                <div class="persona orange">
+                    <div class="role-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        </svg>
+                    </div>
+                    <span class="role-label">Risk Team</span>
+                    <h3>Owns the policy.</h3>
+                    <p>Defines the controls, thresholds, and approvals the agency requires.</p>
+                </div>
+                <div class="persona purple">
+                    <div class="role-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="16 18 22 12 16 6"/>
+                            <polyline points="8 6 2 12 8 18"/>
+                        </svg>
+                    </div>
+                    <span class="role-label">Practitioner</span>
+                    <h3>Builds the model.</h3>
+                    <p>Develops in Domino while evidence and documentation accrue automatically.</p>
+                </div>
+                <div class="persona blue">
+                    <div class="role-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
+                            <polyline points="22 4 12 14.01 9 11.01"/>
+                        </svg>
+                    </div>
+                    <span class="role-label">Validator</span>
+                    <h3>Runs accreditation.</h3>
+                    <p>Reviews evidence in context and gates deployment to production.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====================================================
+         SLIDE 6 — OUTCOME: MONTHS → DAYS
+         ==================================================== -->
+    <section class="slide slide-outcome">
+        <div class="outcome-orb" aria-hidden="true"></div>
+        <div class="slide-content">
+            <div class="eyebrow reveal">The result</div>
+
+            <div class="outcome-hero reveal">
+                <div class="outcome-block was">
+                    <span class="label">Before</span>
+                    <span class="value">Months</span>
+                </div>
+                <span class="outcome-arrow" aria-hidden="true">/</span>
+                <div class="outcome-block now">
+                    <span class="label">Now</span>
+                    <span class="value">Days</span>
+                </div>
+            </div>
+
+            <div class="outcome-section reveal">
+                <span class="outcome-section-label">What just happened</span>
+                <span class="outcome-section-meta">Four steps, one workflow</span>
+            </div>
+
+            <div class="outcome-list stagger">
+                <div class="outcome-item">
+                    <div class="step-row">
+                        <span class="step">01</span>
+                        <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12"/>
+                        </svg>
+                    </div>
+                    <span class="label">Policy doc became enforceable policy.</span>
+                </div>
+                <div class="outcome-item">
+                    <div class="step-row">
+                        <span class="step">02</span>
+                        <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12"/>
+                        </svg>
+                    </div>
+                    <span class="label">Documentation generated from code.</span>
+                </div>
+                <div class="outcome-item">
+                    <div class="step-row">
+                        <span class="step">03</span>
+                        <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12"/>
+                        </svg>
+                    </div>
+                    <span class="label">Automated checks ran on every change.</span>
+                </div>
+                <div class="outcome-item">
+                    <div class="step-row">
+                        <span class="step">04</span>
+                        <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12"/>
+                        </svg>
+                    </div>
+                    <span class="label">Deployment gated on validator approval.</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        /* ========================================
+           SLIDE CONTROLLER
+           Scroll snap + keyboard navigation +
+           intersection-observer animations.
+           ======================================== */
+        const slides = document.querySelectorAll('.slide');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: [0, 0.5, 1] });
+
+        slides.forEach(s => observer.observe(s));
+
+        // Keyboard navigation
+        let current = 0;
+        function goTo(i) {
+            current = Math.max(0, Math.min(slides.length - 1, i));
+            slides[current].scrollIntoView({ behavior: 'smooth' });
+        }
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+                e.preventDefault();
+                goTo(current + 1);
+            } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft' || e.key === 'PageUp') {
+                e.preventDefault();
+                goTo(current - 1);
+            } else if (e.key === 'Home') {
+                goTo(0);
+            } else if (e.key === 'End') {
+                goTo(slides.length - 1);
+            }
+        });
+
+        // Track scroll position for keyboard nav
+        let scrollTimer;
+        document.addEventListener('scroll', () => {
+            clearTimeout(scrollTimer);
+            scrollTimer = setTimeout(() => {
+                const pos = window.scrollY;
+                current = Math.round(pos / window.innerHeight);
+            }, 80);
+        }, { passive: true });
+    </script>
+</body>
+</html>
