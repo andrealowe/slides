@@ -341,7 +341,80 @@
         }
 
         /* ===========================================
-           SLIDE 4: FOUR TEAMS, ONE PLATFORM
+           SLIDE 4: THE FRAMEWORK IS OPEN
+           Four inherited platform capabilities, plus a "knows your
+           work" secondary message. Mirrors slide 3's card pattern
+           for visual consistency.
+           =========================================== */
+        .slide-framework .slide-content { gap: clamp(2rem, 4vw, 3rem); }
+
+        .framework-header { max-width: 95%; }
+        .framework-header .eyebrow { margin-bottom: clamp(1rem, 1.5vw, 1.5rem); }
+
+        .framework-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: clamp(1rem, 2vw, 1.5rem);
+        }
+
+        .framework-card {
+            background: var(--bg-surface);
+            border-radius: 16px;
+            padding: clamp(1.25rem, 2.2vw, 1.9rem);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: clamp(0.75rem, 1.5vw, 1.25rem);
+            min-height: clamp(160px, 20vh, 240px);
+        }
+
+        .framework-card .f-icon {
+            width: clamp(44px, 5vw, 68px);
+            height: clamp(44px, 5vw, 68px);
+        }
+
+        .framework-card .f-label {
+            font-family: var(--font-display);
+            font-size: clamp(1.1rem, 1.65vw, 1.5rem);
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
+            line-height: 1.18;
+        }
+
+        .framework-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: clamp(1.5rem, 3vw, 3rem);
+            padding-top: clamp(1rem, 2vw, 1.75rem);
+            border-top: 1.5px solid var(--divider);
+        }
+
+        .framework-footer .f-punch {
+            font-family: var(--font-display);
+            font-size: clamp(1.25rem, 1.95vw, 1.85rem);
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.015em;
+        }
+
+        .framework-footer .f-sub {
+            font-family: var(--font-display);
+            font-size: clamp(1.05rem, 1.55vw, 1.45rem);
+            font-weight: 500;
+            color: var(--text-secondary);
+            letter-spacing: -0.01em;
+            text-align: right;
+        }
+
+        .framework-footer .f-sub strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        /* ===========================================
+           SLIDE 5: FOUR TEAMS, ONE PLATFORM
            No connector lines. Center "Domino" tile uses the
            Domino Gradient as a top accent bar with the logo.
            =========================================== */
@@ -508,7 +581,7 @@
         }
 
         /* ===========================================
-           SLIDE 5: CLOSING
+           SLIDE 6: CLOSING
            Hexagonal badge with gradient stroke + checkmark.
            No clock-face tick marks. Plus gradient flourish.
            =========================================== */
@@ -597,6 +670,7 @@
             }
             .vertical-card { min-height: clamp(190px, 24vh, 280px); }
             .capability { min-height: clamp(140px, 17vh, 210px); }
+            .framework-card { min-height: clamp(140px, 17vh, 210px); }
         }
 
         @media (max-height: 700px) {
@@ -612,6 +686,9 @@
         @media (max-width: 900px) {
             .problem-grid { grid-template-columns: 1fr; gap: 1rem; }
             .capabilities-grid { grid-template-columns: repeat(2, 1fr); }
+            .framework-grid { grid-template-columns: repeat(2, 1fr); }
+            .framework-footer { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+            .framework-footer .f-sub { text-align: left; }
             .teams-diagram { grid-template-columns: 1fr; grid-template-rows: auto; }
             .industry-card.ind-1, .industry-card.ind-2, .industry-card.ind-3, .industry-card.ind-4 {
                 grid-column: 1; grid-row: auto;
@@ -883,7 +960,76 @@
     </section>
 
     <!-- ===========================================
-         SLIDE 4: FOUR TEAMS, ONE PLATFORM
+         SLIDE 4: THE FRAMEWORK IS OPEN
+         Extensions inherit governance, lineage, audit, scale.
+         Footer carries "Nothing extra to manage" plus the
+         "knows your project, data, user" secondary message.
+         =========================================== -->
+    <section class="slide slide-framework">
+        <div class="slide-content">
+            <div class="framework-header reveal">
+                <div class="eyebrow">Built into the platform</div>
+                <h2>The framework is <span class="gradient-text">open</span>.</h2>
+            </div>
+
+            <div class="framework-grid">
+                <div class="framework-card reveal">
+                    <svg class="f-icon" viewBox="0 0 64 64" fill="none" stroke="url(#dominoGrad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M32 6 L52 14 L52 32 C52 44 42 54 32 58 C22 54 12 44 12 32 L12 14 Z"/>
+                        <polyline points="22,32 30,40 42,26"/>
+                    </svg>
+                    <div class="f-label">Governance</div>
+                </div>
+
+                <div class="framework-card reveal">
+                    <svg class="f-icon" viewBox="0 0 64 64" fill="none" stroke="url(#dominoGrad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <!-- Four-node diamond DAG: one source, two branches, one sink -->
+                        <circle cx="12" cy="32" r="6"/>
+                        <circle cx="32" cy="14" r="6"/>
+                        <circle cx="32" cy="50" r="6"/>
+                        <circle cx="52" cy="32" r="6"/>
+                        <line x1="18" y1="32" x2="26" y2="18"/>
+                        <line x1="18" y1="32" x2="26" y2="46"/>
+                        <line x1="38" y1="14" x2="46" y2="28"/>
+                        <line x1="38" y1="50" x2="46" y2="36"/>
+                    </svg>
+                    <div class="f-label">Lineage</div>
+                </div>
+
+                <div class="framework-card reveal">
+                    <svg class="f-icon" viewBox="0 0 64 64" fill="none" stroke="url(#dominoGrad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <!-- Log document: three timestamped entries -->
+                        <rect x="10" y="8" width="44" height="48" rx="3"/>
+                        <circle cx="18" cy="20" r="2.5"/>
+                        <line x1="24" y1="20" x2="46" y2="20"/>
+                        <circle cx="18" cy="32" r="2.5"/>
+                        <line x1="24" y1="32" x2="46" y2="32"/>
+                        <circle cx="18" cy="44" r="2.5"/>
+                        <line x1="24" y1="44" x2="46" y2="44"/>
+                    </svg>
+                    <div class="f-label">Audit trail</div>
+                </div>
+
+                <div class="framework-card reveal">
+                    <svg class="f-icon" viewBox="0 0 64 64" fill="none" stroke="url(#dominoGrad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <!-- Three nested rounded squares, suggesting scale up -->
+                        <rect x="8"  y="8"  width="48" height="48" rx="4"/>
+                        <rect x="18" y="18" width="28" height="28" rx="3"/>
+                        <rect x="26" y="26" width="12" height="12" rx="2"/>
+                    </svg>
+                    <div class="f-label">Scale</div>
+                </div>
+            </div>
+
+            <div class="framework-footer reveal">
+                <div class="f-punch">Nothing extra to manage.</div>
+                <div class="f-sub">Extensions know your <strong>project</strong>, your <strong>data</strong>, your <strong>user</strong>.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===========================================
+         SLIDE 5: FOUR TEAMS, ONE PLATFORM
          No connector lines. Center tile uses the actual Domino logo
          with a gradient stripe, visually anchoring the platform.
          =========================================== -->
@@ -962,15 +1108,20 @@
 
                 <div class="industry-card ind-4 reveal">
                     <svg class="ind-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <!-- Erlenmeyer flask outline -->
-                        <path d="M24 10 L24 26 L14 48 C12 52 14 56 18 56 L46 56 C50 56 52 52 50 48 L40 26 L40 10"/>
-                        <!-- Flask neck rim and liquid line -->
-                        <line x1="20" y1="10" x2="44" y2="10"/>
-                        <line x1="22" y1="38" x2="42" y2="38"/>
+                        <!-- Balance scale: fulcrum dot, central post, horizontal beam,
+                             two pan suspension strings, two pan curves, and a base. -->
+                        <circle cx="32" cy="12" r="2"/>
+                        <line x1="32" y1="14" x2="32" y2="54"/>
+                        <line x1="10" y1="18" x2="54" y2="18"/>
+                        <line x1="10" y1="18" x2="10" y2="24"/>
+                        <path d="M 4 24 Q 10 32 16 24"/>
+                        <line x1="54" y1="18" x2="54" y2="24"/>
+                        <path d="M 48 24 Q 54 32 60 24"/>
+                        <line x1="22" y1="54" x2="42" y2="54"/>
                     </svg>
                     <div class="ind-text">
-                        <div class="ind-name">Research & R&D</div>
-                        <div class="ind-need">Experimental, novel models</div>
+                        <div class="ind-name">Risk &amp; Compliance</div>
+                        <div class="ind-need">Regulated, policy-driven</div>
                     </div>
                 </div>
             </div>
@@ -986,7 +1137,7 @@
     </section>
 
     <!-- ===========================================
-         SLIDE 5: CLOSING
+         SLIDE 6: CLOSING
          Hexagonal badge with gradient stroke + checkmark.
          No tick marks, no concentric rings - no longer clock-like.
          =========================================== -->
