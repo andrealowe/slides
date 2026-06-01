@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Domino Extensions</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+
+    <style>
+        :root {
+            /* Corporate Light preset (per STYLE_PRESETS.md) */
+            --bg-primary: #FFFFFF;
+            --bg-surface: #F1F0F4;          /* Light Grey, cards and sections */
+            --text-primary: #000000;
+            --text-secondary: #3C3A42;       /* Dark Grey */
+            --text-muted: #777384;           /* Medium Grey */
+            --divider: rgba(0, 0, 0, 0.08);
+
+            /* Brand colors */
+            --accent: #FF6543;               /* Domino Orange */
+            --light-purple: #D4C9FC;
+            --light-blue: #A5C5F6;
+
+            /* Domino Gradient 2025 (Gold → Red → Pink → Purple) */
+            --domino-gradient: linear-gradient(135deg, #FF9421 0%, #F8475E 34%, #F020B3 66%, #8636F8 100%);
+
+            --font-display: 'New Grotesk', 'Inter', 'Helvetica Neue', sans-serif;
+            --font-body: 'New Grotesk', 'Inter', 'Helvetica Neue', sans-serif;
+            --font-mono: 'New Grotesk Mono', 'JetBrains Mono', monospace;
+
+            --title-size: clamp(3rem, 7.5vw, 6.5rem);
+            --h2-size: clamp(2.25rem, 5.5vw, 4.5rem);
+            --h3-size: clamp(1.5rem, 3vw, 2.5rem);
+            --body-size: clamp(1.15rem, 1.9vw, 1.75rem);
+            --small-size: clamp(0.95rem, 1.3vw, 1.25rem);
+            --eyebrow-size: clamp(0.85rem, 1.1vw, 1.05rem);
+
+            --slide-padding: clamp(2.5rem, 6vw, 6rem);
+            --content-gap: clamp(1.5rem, 3vw, 3rem);
+
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --duration-normal: 0.7s;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-snap-type: y mandatory;
+            height: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: var(--font-body);
+            font-weight: 400;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            height: 100%;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            padding: var(--slide-padding);
+            scroll-snap-align: start;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            background: var(--bg-primary);
+        }
+
+        .slide-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            max-height: 100%;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        h1, h2, h3 {
+            font-family: var(--font-display);
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            line-height: 1.02;
+            color: var(--text-primary);
+        }
+
+        h1 { font-size: var(--title-size); }
+        h2 { font-size: var(--h2-size); }
+        h3 { font-size: var(--h3-size); font-weight: 600; }
+
+        p { font-size: var(--body-size); line-height: 1.35; color: var(--text-secondary); }
+
+        .eyebrow {
+            font-family: var(--font-mono);
+            font-size: var(--eyebrow-size);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            color: var(--accent);
+        }
+
+        .accent { color: var(--accent); }
+
+        .gradient-text {
+            background: var(--domino-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+        }
+
+        .corner-logo {
+            position: fixed;
+            bottom: 24px;
+            left: 28px;
+            height: 26px;
+            width: auto;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity var(--duration-normal) var(--ease-out-expo),
+                        transform var(--duration-normal) var(--ease-out-expo);
+        }
+        .slide.visible .reveal { opacity: 1; transform: translateY(0); }
+        .reveal:nth-child(1) { transition-delay: 0.05s; }
+        .reveal:nth-child(2) { transition-delay: 0.18s; }
+        .reveal:nth-child(3) { transition-delay: 0.31s; }
+        .reveal:nth-child(4) { transition-delay: 0.44s; }
+        .reveal:nth-child(5) { transition-delay: 0.57s; }
+
+        /* ===========================================
+           SLIDE 1: THE PROBLEM
+           Three verticals on three approved brand backgrounds.
+           Adds color while staying within Domino brand combos.
+           =========================================== */
+        .slide-problem .slide-content { gap: clamp(2rem, 4vw, 3.5rem); }
+
+        .problem-header { max-width: 95%; }
+        .problem-header .eyebrow { margin-bottom: clamp(1rem, 1.5vw, 1.5rem); }
+
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: clamp(1.25rem, 2.5vw, 2.5rem);
+            align-items: stretch;
+        }
+
+        .vertical-card {
+            border-radius: 16px;
+            padding: clamp(1.5rem, 2.8vw, 2.5rem);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: clamp(1rem, 2vw, 1.75rem);
+            min-height: clamp(220px, 28vh, 320px);
+        }
+
+        .vertical-card.life-sciences { background: var(--light-purple); }
+        .vertical-card.financial-services { background: var(--light-blue); }
+        .vertical-card.public-sector { background: var(--bg-surface); }
+
+        .vertical-card .v-icon {
+            width: clamp(56px, 7vw, 96px);
+            height: clamp(56px, 7vw, 96px);
+            color: #000000;
+        }
+
+        .vertical-card .v-label {
+            font-family: var(--font-display);
+            font-size: clamp(1.35rem, 2.2vw, 2rem);
+            font-weight: 700;
+            color: #000000;
+            letter-spacing: -0.015em;
+            line-height: 1.1;
+        }
+
+        .vertical-card .v-desc {
+            font-size: clamp(1rem, 1.4vw, 1.25rem);
+            color: rgba(0, 0, 0, 0.65);
+            line-height: 1.35;
+            margin-top: clamp(0.4rem, 0.8vw, 0.6rem);
+        }
+
+        .problem-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: clamp(1rem, 2vw, 2rem);
+            padding-top: clamp(0.75rem, 1.5vw, 1.5rem);
+            border-top: 1.5px solid var(--divider);
+        }
+
+        .problem-footer .platform-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: clamp(0.75rem, 1.5vw, 1.25rem);
+            padding: clamp(0.6rem, 1.2vw, 1rem) clamp(1rem, 2vw, 1.75rem);
+            background: #000000;
+            color: #FFFFFF;
+            border-radius: 999px;
+            font-family: var(--font-mono);
+            font-size: clamp(0.85rem, 1.2vw, 1.1rem);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .problem-footer .platform-tag .dot {
+            width: 8px; height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+        }
+
+        .problem-footer .punch {
+            font-family: var(--font-display);
+            font-size: clamp(1.15rem, 1.85vw, 1.75rem);
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.015em;
+            text-align: right;
+        }
+
+        .problem-footer .punch .accent { color: var(--accent); }
+
+        /* ===========================================
+           SLIDE 2: SOLUTION STATEMENT
+           Two-column grid: typography on the left, modular tile
+           grid on the right. The grid must be fully visible, so
+           the motif is no longer positioned absolute.
+           =========================================== */
+        .slide-statement .slide-content {
+            display: grid;
+            grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+            gap: clamp(2rem, 4vw, 5rem);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .statement-text {
+            display: flex;
+            flex-direction: column;
+            gap: clamp(1.25rem, 2.5vw, 2.25rem);
+            min-width: 0;
+        }
+
+        .statement-headline {
+            font-size: clamp(3.25rem, 8vw, 7rem);
+            font-weight: 700;
+            line-height: 0.97;
+            letter-spacing: -0.035em;
+        }
+
+        .statement-rule {
+            width: clamp(80px, 10vw, 160px);
+            height: 4px;
+            background: var(--domino-gradient);
+            border-radius: 2px;
+        }
+
+        .statement-sub {
+            font-size: clamp(1.2rem, 1.9vw, 1.75rem);
+            color: var(--text-secondary);
+            line-height: 1.35;
+            font-weight: 400;
+        }
+
+        .statement-sub strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .statement-graphic {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 0;
+        }
+
+        .statement-motif {
+            width: 100%;
+            height: auto;
+            max-width: clamp(300px, 36vw, 520px);
+            aspect-ratio: 1 / 1;
+        }
+
+        /* ===========================================
+           SLIDE 3: CAPABILITIES
+           All 6 cards uniform Light Grey. Color comes from
+           gradient-stroked icons - no card is singled out.
+           =========================================== */
+        .slide-capabilities .slide-content { gap: clamp(2rem, 4vw, 3rem); }
+
+        .capabilities-header { max-width: 95%; }
+        .capabilities-header .eyebrow { margin-bottom: clamp(1rem, 1.5vw, 1.5rem); }
+        .capabilities-header h2 { max-width: 90%; }
+
+        .capabilities-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: clamp(1rem, 2vw, 1.75rem);
+        }
+
+        .capability {
+            background: var(--bg-surface);
+            border-radius: 16px;
+            padding: clamp(1.25rem, 2.2vw, 1.9rem);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: clamp(0.75rem, 1.5vw, 1.25rem);
+            min-height: clamp(160px, 20vh, 240px);
+        }
+
+        .capability .cap-icon {
+            width: clamp(44px, 5vw, 68px);
+            height: clamp(44px, 5vw, 68px);
+        }
+
+        .capability .cap-label {
+            font-family: var(--font-display);
+            font-size: clamp(1.1rem, 1.65vw, 1.5rem);
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
+            line-height: 1.18;
+        }
+
+        /* ===========================================
+           SLIDE 4: FOUR TEAMS, ONE PLATFORM
+           No connector lines. Center "Domino" tile uses the
+           Domino Gradient as a top accent bar with the logo.
+           =========================================== */
+        .slide-teams .slide-content { gap: clamp(1.75rem, 3.5vw, 3rem); }
+
+        .teams-header { max-width: 95%; }
+        .teams-header .eyebrow { margin-bottom: clamp(1rem, 1.5vw, 1.5rem); }
+
+        .teams-diagram {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1.05fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: clamp(1rem, 1.8vw, 1.5rem);
+            align-items: stretch;
+            min-height: 0;
+        }
+
+        .industry-card {
+            background: var(--bg-surface);
+            border-radius: 14px;
+            padding: clamp(1rem, 2vw, 1.75rem);
+            display: flex;
+            align-items: center;
+            gap: clamp(0.75rem, 1.5vw, 1.25rem);
+        }
+
+        .industry-card .ind-icon {
+            width: clamp(40px, 4.5vw, 64px);
+            height: clamp(40px, 4.5vw, 64px);
+            flex-shrink: 0;
+            color: var(--text-primary);
+        }
+
+        .industry-card .ind-text { display: flex; flex-direction: column; gap: 4px; }
+
+        .industry-card .ind-name {
+            font-family: var(--font-display);
+            font-size: clamp(1.05rem, 1.6vw, 1.45rem);
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
+            line-height: 1.15;
+        }
+
+        .industry-card .ind-need {
+            font-size: clamp(0.85rem, 1.15vw, 1.05rem);
+            color: var(--text-muted);
+            line-height: 1.3;
+        }
+
+        .industry-card.ind-1 { grid-column: 1; grid-row: 1; }
+        .industry-card.ind-2 { grid-column: 3; grid-row: 1; }
+        .industry-card.ind-3 { grid-column: 1; grid-row: 2; }
+        .industry-card.ind-4 { grid-column: 3; grid-row: 2; }
+
+        .center-tile {
+            grid-column: 2;
+            grid-row: 1 / span 2;
+            background: var(--bg-surface);
+            border-radius: 16px;
+            padding: clamp(1.25rem, 2.5vw, 2rem);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: clamp(1rem, 2vw, 1.75rem);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .center-tile::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 6px;
+            background: var(--domino-gradient);
+        }
+
+        .center-tile .center-logo {
+            height: clamp(28px, 3.4vw, 48px);
+            width: auto;
+        }
+
+        .center-tile .center-label {
+            font-family: var(--font-mono);
+            font-size: clamp(0.78rem, 1vw, 0.95rem);
+            text-transform: uppercase;
+            letter-spacing: 0.22em;
+            color: var(--accent);
+            text-align: center;
+        }
+
+        .center-tile .center-tag {
+            font-family: var(--font-display);
+            font-size: clamp(1.05rem, 1.55vw, 1.4rem);
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        .center-chips {
+            display: flex;
+            flex-direction: column;
+            gap: clamp(0.4rem, 0.8vw, 0.6rem);
+            width: 100%;
+            align-items: center;
+        }
+
+        .center-chips .chip-row {
+            display: flex;
+            gap: clamp(0.4rem, 0.8vw, 0.6rem);
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .center-chips .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: clamp(0.35rem, 0.7vw, 0.5rem);
+            padding: clamp(0.35rem, 0.7vw, 0.55rem) clamp(0.65rem, 1.1vw, 0.95rem);
+            background: #FFFFFF;
+            border-radius: 999px;
+            font-family: var(--font-mono);
+            font-size: clamp(0.7rem, 0.95vw, 0.9rem);
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            color: var(--text-secondary);
+        }
+
+        .center-chips .chip-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+        }
+
+        /* Per-chip dot colors override .chip-dot default */
+        .chip.dot-orange .chip-dot { background: #FF6543; }
+        .chip.dot-purple .chip-dot { background: #8636F8; }
+        .chip.dot-pink   .chip-dot { background: #F020B3; }
+        .chip.dot-red    .chip-dot { background: #F8475E; }
+        .chip.dot-gold   .chip-dot { background: #FF9421; }
+
+        .teams-footer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: clamp(1.5rem, 3vw, 3rem);
+            padding-top: clamp(1rem, 2vw, 1.75rem);
+            border-top: 1.5px solid var(--divider);
+            font-family: var(--font-display);
+            font-size: clamp(1.1rem, 1.6vw, 1.5rem);
+            font-weight: 500;
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
+        }
+
+        .teams-footer .sep {
+            width: 6px; height: 6px;
+            background: var(--text-muted);
+            border-radius: 50%;
+        }
+
+        /* ===========================================
+           SLIDE 5: CLOSING
+           Hexagonal badge with gradient stroke + checkmark.
+           No clock-face tick marks. Plus gradient flourish.
+           =========================================== */
+        .slide-closing .slide-content {
+            gap: clamp(1.75rem, 3vw, 2.5rem);
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .badge-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: clamp(1.5rem, 3vw, 2.5rem);
+            margin-bottom: clamp(0.5rem, 1vw, 1rem);
+        }
+
+        .quality-badge {
+            width: clamp(110px, 12vw, 180px);
+            height: clamp(110px, 12vw, 180px);
+        }
+
+        .badge-text {
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .badge-text .badge-label {
+            font-family: var(--font-mono);
+            font-size: clamp(0.9rem, 1.2vw, 1.15rem);
+            text-transform: uppercase;
+            letter-spacing: 0.22em;
+            color: var(--accent);
+        }
+
+        .badge-text .badge-detail {
+            font-family: var(--font-display);
+            font-size: clamp(1.35rem, 2.1vw, 1.9rem);
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.015em;
+            line-height: 1.15;
+        }
+
+        .closing-headline {
+            font-size: clamp(3.5rem, 8.5vw, 7.5rem);
+            font-weight: 700;
+            line-height: 0.98;
+            letter-spacing: -0.035em;
+        }
+
+        .closing-sub {
+            font-size: clamp(1.25rem, 2vw, 1.85rem);
+            color: var(--text-secondary);
+            max-width: 70%;
+            line-height: 1.35;
+        }
+
+        .closing-rule {
+            width: clamp(80px, 10vw, 160px);
+            height: 5px;
+            background: var(--domino-gradient);
+            border-radius: 3px;
+            margin: clamp(0.5rem, 1vw, 1rem) auto;
+        }
+
+        @media print {
+            *, *::before, *::after {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+            .corner-logo { display: none !important; }
+            html, body { height: auto; overflow: visible; background: var(--bg-primary) !important; }
+            html { scroll-snap-type: none; scroll-behavior: auto; }
+            .slide { break-inside: avoid; page-break-inside: avoid; height: 100vh; overflow: hidden; }
+        }
+
+        @media (max-height: 800px) {
+            :root {
+                --slide-padding: clamp(2rem, 5vw, 4rem);
+                --content-gap: clamp(1rem, 2vw, 2rem);
+            }
+            .vertical-card { min-height: clamp(190px, 24vh, 280px); }
+            .capability { min-height: clamp(140px, 17vh, 210px); }
+        }
+
+        @media (max-height: 700px) {
+            :root {
+                --title-size: clamp(2.5rem, 6vw, 4.5rem);
+                --h2-size: clamp(1.75rem, 4.5vw, 3.5rem);
+                --slide-padding: clamp(1.5rem, 4vw, 3rem);
+            }
+            .statement-headline { font-size: clamp(2.75rem, 7vw, 5.5rem); }
+            .closing-headline { font-size: clamp(2.75rem, 6.5vw, 5.5rem); }
+        }
+
+        @media (max-width: 900px) {
+            .problem-grid { grid-template-columns: 1fr; gap: 1rem; }
+            .capabilities-grid { grid-template-columns: repeat(2, 1fr); }
+            .teams-diagram { grid-template-columns: 1fr; grid-template-rows: auto; }
+            .industry-card.ind-1, .industry-card.ind-2, .industry-card.ind-3, .industry-card.ind-4 {
+                grid-column: 1; grid-row: auto;
+            }
+            .center-tile { grid-column: 1; grid-row: auto; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.2s !important;
+            }
+            html { scroll-behavior: auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===========================================
+         GLOBAL SVG DEFS: shared Domino Gradient.
+         Hidden zero-size SVG so its <defs> are reachable
+         from all other SVG icons via stroke="url(#dominoGrad)".
+         =========================================== -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+        <defs>
+            <linearGradient id="dominoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#FF9421"/>
+                <stop offset="34%" stop-color="#F8475E"/>
+                <stop offset="66%" stop-color="#F020B3"/>
+                <stop offset="100%" stop-color="#8636F8"/>
+            </linearGradient>
+            <linearGradient id="dominoGradH" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#FF9421"/>
+                <stop offset="34%" stop-color="#F8475E"/>
+                <stop offset="66%" stop-color="#F020B3"/>
+                <stop offset="100%" stop-color="#8636F8"/>
+            </linearGradient>
+        </defs>
+    </svg>
+
+    <img src="domino-logo.png" class="corner-logo" alt="Domino">
+
+    <!-- ===========================================
+         SLIDE 1: THE PROBLEM (verticals version)
+         =========================================== -->
+    <section class="slide slide-problem">
+        <div class="slide-content">
+            <div class="problem-header reveal">
+                <div class="eyebrow">The platform tax</div>
+                <h1>Every team works<br>differently.</h1>
+            </div>
+
+            <div class="problem-grid">
+                <div class="vertical-card life-sciences reveal">
+                    <svg class="v-icon" viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M28 14 C28 30, 68 38, 68 54 C68 70, 28 78, 28 92"/>
+                        <path d="M68 14 C68 30, 28 38, 28 54 C28 70, 68 78, 68 92"/>
+                        <line x1="32" y1="24" x2="64" y2="24"/>
+                        <line x1="36" y1="36" x2="60" y2="36"/>
+                        <line x1="36" y1="60" x2="60" y2="60"/>
+                        <line x1="32" y1="72" x2="64" y2="72"/>
+                    </svg>
+                    <div>
+                        <div class="v-label">Life sciences</div>
+                        <div class="v-desc">Regulated data. Long-running experiments. Clinical rigor.</div>
+                    </div>
+                </div>
+
+                <div class="vertical-card financial-services reveal">
+                    <svg class="v-icon" viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <!-- Axes -->
+                        <line x1="14" y1="82" x2="86" y2="82"/>
+                        <line x1="14" y1="82" x2="14" y2="14"/>
+                        <!-- Trend line with data points -->
+                        <polyline points="22,68 36,52 50,60 64,38 78,30"/>
+                        <circle cx="22" cy="68" r="3"/>
+                        <circle cx="36" cy="52" r="3"/>
+                        <circle cx="50" cy="60" r="3"/>
+                        <circle cx="64" cy="38" r="3"/>
+                        <circle cx="78" cy="30" r="3"/>
+                    </svg>
+                    <div>
+                        <div class="v-label">Financial services</div>
+                        <div class="v-desc">Sub-second decisions. Auditable. Latency-sensitive.</div>
+                    </div>
+                </div>
+
+                <div class="vertical-card public-sector reveal">
+                    <svg class="v-icon" viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="48,12 82,30 14,30"/>
+                        <line x1="14" y1="30" x2="82" y2="30"/>
+                        <line x1="14" y1="36" x2="82" y2="36"/>
+                        <line x1="22" y1="36" x2="22" y2="72"/>
+                        <line x1="38" y1="36" x2="38" y2="72"/>
+                        <line x1="58" y1="36" x2="58" y2="72"/>
+                        <line x1="74" y1="36" x2="74" y2="72"/>
+                        <line x1="10" y1="72" x2="86" y2="72"/>
+                        <line x1="10" y1="78" x2="86" y2="78"/>
+                        <line x1="10" y1="84" x2="86" y2="84"/>
+                    </svg>
+                    <div>
+                        <div class="v-label">Public sector</div>
+                        <div class="v-desc">Mission-specific. Compliant. Custom workflows.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="problem-footer reveal">
+                <div class="platform-tag">
+                    <span class="dot"></span>
+                    One platform shape
+                </div>
+                <div class="punch">Eighty percent fit. <span class="accent">None of it scales.</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===========================================
+         SLIDE 2: SOLUTION STATEMENT
+         Two-column layout: typography left, modular tile grid right.
+         Grid metaphor: a precision 5x5 grid of cells, with a contiguous
+         cluster activated in brand-gradient colors. The cluster's shape
+         IS the team's configuration. Pure orthogonal geometry.
+         =========================================== -->
+    <section class="slide slide-statement">
+        <div class="slide-content">
+            <div class="statement-text">
+                <div class="eyebrow reveal">Domino Extensions</div>
+                <h1 class="statement-headline reveal">Domino <span class="gradient-text">adapts</span><br>to your work.</h1>
+                <div class="statement-rule reveal"></div>
+                <p class="statement-sub reveal">Not another app store. Not standalone tools bolted on. <strong>Extensions aren't additions to Domino. They're Domino, shaped around how your team works.</strong></p>
+            </div>
+
+            <div class="statement-graphic reveal">
+                <svg class="statement-motif" viewBox="0 0 600 600" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <!-- Background grid: all 25 cells in Light Grey.
+                         Grid is precisely centered in the 600x600 viewBox:
+                         5 cells x 76px + 4 gaps x 14px = 436px total,
+                         so margins are (600-436)/2 = 82px on each side. -->
+                    <g fill="#F1F0F4">
+                        <rect x="82"  y="82"  width="76" height="76" rx="10"/>
+                        <rect x="172" y="82"  width="76" height="76" rx="10"/>
+                        <rect x="262" y="82"  width="76" height="76" rx="10"/>
+                        <rect x="352" y="82"  width="76" height="76" rx="10"/>
+                        <rect x="442" y="82"  width="76" height="76" rx="10"/>
+                        <rect x="82"  y="172" width="76" height="76" rx="10"/>
+                        <rect x="172" y="172" width="76" height="76" rx="10"/>
+                        <rect x="262" y="172" width="76" height="76" rx="10"/>
+                        <rect x="352" y="172" width="76" height="76" rx="10"/>
+                        <rect x="442" y="172" width="76" height="76" rx="10"/>
+                        <rect x="82"  y="262" width="76" height="76" rx="10"/>
+                        <rect x="172" y="262" width="76" height="76" rx="10"/>
+                        <rect x="262" y="262" width="76" height="76" rx="10"/>
+                        <rect x="352" y="262" width="76" height="76" rx="10"/>
+                        <rect x="442" y="262" width="76" height="76" rx="10"/>
+                        <rect x="82"  y="352" width="76" height="76" rx="10"/>
+                        <rect x="172" y="352" width="76" height="76" rx="10"/>
+                        <rect x="262" y="352" width="76" height="76" rx="10"/>
+                        <rect x="352" y="352" width="76" height="76" rx="10"/>
+                        <rect x="442" y="352" width="76" height="76" rx="10"/>
+                        <rect x="82"  y="442" width="76" height="76" rx="10"/>
+                        <rect x="172" y="442" width="76" height="76" rx="10"/>
+                        <rect x="262" y="442" width="76" height="76" rx="10"/>
+                        <rect x="352" y="442" width="76" height="76" rx="10"/>
+                        <rect x="442" y="442" width="76" height="76" rx="10"/>
+                    </g>
+                    <!-- Activated cluster: 8 cells forming a staircase configuration.
+                         Colors progress by row through the Domino Gradient
+                         (gold -> red -> pink -> purple), so the cluster reads as
+                         one connected gradient flow rather than a confetti of hues. -->
+                    <!-- Row 0: gold -->
+                    <rect x="172" y="82"  width="76" height="76" rx="10" fill="#FF9421"/>
+                    <rect x="262" y="82"  width="76" height="76" rx="10" fill="#FF9421"/>
+                    <!-- Row 1: red -->
+                    <rect x="172" y="172" width="76" height="76" rx="10" fill="#F8475E"/>
+                    <rect x="262" y="172" width="76" height="76" rx="10" fill="#F8475E"/>
+                    <rect x="352" y="172" width="76" height="76" rx="10" fill="#F8475E"/>
+                    <!-- Row 2: pink -->
+                    <rect x="262" y="262" width="76" height="76" rx="10" fill="#F020B3"/>
+                    <rect x="352" y="262" width="76" height="76" rx="10" fill="#F020B3"/>
+                    <!-- Row 3: purple -->
+                    <rect x="352" y="352" width="76" height="76" rx="10" fill="#8636F8"/>
+                </svg>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===========================================
+         SLIDE 3: CAPABILITIES
+         Uniform Light Grey cards. Icons use the Domino Gradient
+         as their stroke - color across all 6, none singled out.
+         =========================================== -->
+    <section class="slide slide-capabilities">
+        <div class="slide-content">
+            <div class="capabilities-header reveal">
+                <div class="eyebrow">What you can build</div>
+                <h2>Almost anything<br>you can imagine.</h2>
+            </div>
+
+            <div class="capabilities-grid">
+                <div class="capability reveal">
+                    <svg class="cap-icon" viewBox="0 0 64 64" fill="none" stroke="url(#dominoGrad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="32,8 56,20 32,32 8,20"/>
+                        <polyline points="8,32 32,44 56,32"/>
+                        <polyline points="8,44 32,56 56,44"/>
+                    </svg>
+                    <div class="cap-label">Custom development environments</div>
+                </div>
+
+                <div class="capability reveal">
+                    <svg class="cap-icon" viewBox="0 0 64 64" fill="none" stroke="url(#dominoGrad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="8" y="8" width="20" height="20" rx="2"/>
+                        <rect x="36" y="8" width="20" height="20" rx="2"/>
+                        <rect x="8" y="36" width="20" height="20" rx="2"/>
+                        <circle cx="46" cy="46" r="8"/>
+                        <line x1="52" y1="52" x2="56" y2="56"/>
+                    </svg>
+                    <div class="cap-label">Domain-specific data explorers</div>
+                </div>
+
+                <div class="capability reveal">
+                    <svg class="cap-icon" viewBox="0 0 64 64" fill="none" stroke="url(#dominoGrad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M32 6 L52 14 L52 32 C52 44 42 54 32 58 C22 54 12 44 12 32 L12 14 Z"/>
+                        <polyline points="22,32 30,40 42,26"/>
+                    </svg>
+                    <div class="cap-label">Governance workflows</div>
+                </div>
+
+                <div class="capability reveal">
+                    <svg class="cap-icon" viewBox="0 0 64 64" fill="none" stroke="url(#dominoGrad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M8 16 L32 6 L56 16 L56 24 L32 32 L8 24 Z"/>
+                        <path d="M8 24 L8 46 L32 56 L56 46 L56 24"/>
+                        <line x1="32" y1="32" x2="32" y2="56"/>
+                        <line x1="20" y1="20" x2="20" y2="40"/>
+                        <line x1="44" y1="20" x2="44" y2="40"/>
+                    </svg>
+                    <div class="cap-label">Marketplace browsers</div>
+                </div>
+
+                <div class="capability reveal">
+                    <svg class="cap-icon" viewBox="0 0 64 64" fill="none" stroke="url(#dominoGrad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 6 L40 6 L52 18 L52 58 L14 58 Z"/>
+                        <polyline points="40,6 40,18 52,18"/>
+                        <line x1="22" y1="28" x2="44" y2="28"/>
+                        <line x1="22" y1="38" x2="44" y2="38"/>
+                        <line x1="22" y1="48" x2="36" y2="48"/>
+                    </svg>
+                    <div class="cap-label">Documentation generators</div>
+                </div>
+
+                <div class="capability reveal">
+                    <svg class="cap-icon" viewBox="0 0 64 64" fill="none" stroke="url(#dominoGrad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <!-- Clipboard outline -->
+                        <rect x="14" y="10" width="36" height="48" rx="3"/>
+                        <!-- Clipboard clip at top -->
+                        <rect x="24" y="6" width="16" height="8" rx="2" fill="#F1F0F4"/>
+                        <!-- Review items, two checked, one pending -->
+                        <polyline points="20,26 24,30 30,22"/>
+                        <line x1="34" y1="26" x2="44" y2="26"/>
+                        <polyline points="20,38 24,42 30,34"/>
+                        <line x1="34" y1="38" x2="44" y2="38"/>
+                        <rect x="19" y="46" width="6" height="6" rx="1"/>
+                        <line x1="29" y1="49" x2="44" y2="49"/>
+                    </svg>
+                    <div class="cap-label">Admin & review interfaces</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===========================================
+         SLIDE 4: FOUR TEAMS, ONE PLATFORM
+         No connector lines. Center tile uses the actual Domino logo
+         with a gradient stripe, visually anchoring the platform.
+         =========================================== -->
+    <section class="slide slide-teams">
+        <div class="slide-content">
+            <div class="teams-header reveal">
+                <h2>Four teams.<br>One platform.</h2>
+            </div>
+
+            <div class="teams-diagram">
+                <div class="industry-card ind-1 reveal">
+                    <svg class="ind-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="14" y="14" width="36" height="36" rx="6"/>
+                        <line x1="32" y1="22" x2="32" y2="42"/>
+                        <line x1="22" y1="32" x2="42" y2="32"/>
+                    </svg>
+                    <div class="ind-text">
+                        <div class="ind-name">Healthcare</div>
+                        <div class="ind-need">Regulated, clinical-grade</div>
+                    </div>
+                </div>
+
+                <div class="industry-card ind-2 reveal">
+                    <svg class="ind-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="10" y1="54" x2="54" y2="54"/>
+                        <line x1="10" y1="10" x2="10" y2="54"/>
+                        <polyline points="14,42 22,34 32,40 42,24 54,30"/>
+                        <circle cx="14" cy="42" r="2"/>
+                        <circle cx="22" cy="34" r="2"/>
+                        <circle cx="32" cy="40" r="2"/>
+                        <circle cx="42" cy="24" r="2"/>
+                        <circle cx="54" cy="30" r="2"/>
+                    </svg>
+                    <div class="ind-text">
+                        <div class="ind-name">Financial services</div>
+                        <div class="ind-need">Low latency, auditable</div>
+                    </div>
+                </div>
+
+                <div class="center-tile reveal">
+                    <div class="center-label">Common foundation</div>
+                    <img src="domino-logo.png" alt="Domino" class="center-logo">
+                    <div class="center-tag">One platform.<br>Shaped by you.</div>
+                    <div class="center-chips">
+                        <div class="chip-row">
+                            <span class="chip dot-orange"><span class="chip-dot"></span>MLOps</span>
+                            <span class="chip dot-purple"><span class="chip-dot"></span>Governance</span>
+                            <span class="chip dot-pink"><span class="chip-dot"></span>SDLC</span>
+                        </div>
+                        <div class="chip-row">
+                            <span class="chip dot-red"><span class="chip-dot"></span>Infra &amp; Data Orchestration</span>
+                            <span class="chip dot-gold"><span class="chip-dot"></span>Data</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="industry-card ind-3 reveal">
+                    <svg class="ind-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <!-- Capitol building, scaled from slide 1's public-sector icon -->
+                        <polygon points="32,8 54,20 10,20"/>
+                        <line x1="10" y1="20" x2="54" y2="20"/>
+                        <line x1="10" y1="24" x2="54" y2="24"/>
+                        <line x1="15" y1="24" x2="15" y2="48"/>
+                        <line x1="25" y1="24" x2="25" y2="48"/>
+                        <line x1="39" y1="24" x2="39" y2="48"/>
+                        <line x1="49" y1="24" x2="49" y2="48"/>
+                        <line x1="7"  y1="48" x2="57" y2="48"/>
+                        <line x1="7"  y1="52" x2="57" y2="52"/>
+                        <line x1="7"  y1="56" x2="57" y2="56"/>
+                    </svg>
+                    <div class="ind-text">
+                        <div class="ind-name">Defense & public sector</div>
+                        <div class="ind-need">Mission-specific, classified</div>
+                    </div>
+                </div>
+
+                <div class="industry-card ind-4 reveal">
+                    <svg class="ind-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <!-- Erlenmeyer flask outline -->
+                        <path d="M24 10 L24 26 L14 48 C12 52 14 56 18 56 L46 56 C50 56 52 52 50 48 L40 26 L40 10"/>
+                        <!-- Flask neck rim and liquid line -->
+                        <line x1="20" y1="10" x2="44" y2="10"/>
+                        <line x1="22" y1="38" x2="42" y2="38"/>
+                    </svg>
+                    <div class="ind-text">
+                        <div class="ind-name">Research & R&D</div>
+                        <div class="ind-need">Experimental, novel models</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="teams-footer reveal">
+                <span>We build it</span>
+                <span class="sep"></span>
+                <span>You build it</span>
+                <span class="sep"></span>
+                <span class="accent">We build it together</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===========================================
+         SLIDE 5: CLOSING
+         Hexagonal badge with gradient stroke + checkmark.
+         No tick marks, no concentric rings - no longer clock-like.
+         =========================================== -->
+    <section class="slide slide-closing">
+        <div class="slide-content">
+            <div class="badge-row reveal">
+                <svg class="quality-badge" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Hexagonal badge with gradient stroke -->
+                    <polygon points="90,12 156,48 156,132 90,168 24,132 24,48"
+                             stroke="url(#dominoGrad)" stroke-width="5" fill="white" stroke-linejoin="round"/>
+                    <polygon points="90,30 140,56 140,124 90,150 40,124 40,56"
+                             stroke="url(#dominoGrad)" stroke-width="1.5" fill="none" stroke-linejoin="round" opacity="0.4"/>
+                    <!-- Clean checkmark inside -->
+                    <path d="M58 92 L82 116 L126 66"
+                          stroke="#000000" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                </svg>
+
+                <div class="badge-text">
+                    <div class="badge-label">Domino Official</div>
+                    <div class="badge-detail">Same quality bar<br>as the core release.</div>
+                </div>
+            </div>
+
+            <h1 class="closing-headline reveal">Your flavor<br>of <span class="gradient-text">Domino</span>.</h1>
+            <div class="closing-rule reveal"></div>
+            <p class="closing-sub reveal">Domino adapts to your work.</p>
+        </div>
+    </section>
+
+    <script>
+        /* Reveal-on-scroll using IntersectionObserver */
+        (function() {
+            const slides = document.querySelectorAll('.slide');
+            if (!('IntersectionObserver' in window)) {
+                slides.forEach(s => s.classList.add('visible'));
+                return;
+            }
+            const io = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) e.target.classList.add('visible');
+                });
+            }, { threshold: 0.25 });
+            slides.forEach(s => io.observe(s));
+            slides[0] && slides[0].classList.add('visible');
+        })();
+
+        /* Keyboard navigation: arrows, space, PgUp/PgDn, Home/End */
+        (function() {
+            const slides = Array.from(document.querySelectorAll('.slide'));
+            function goTo(i) {
+                i = Math.max(0, Math.min(slides.length - 1, i));
+                slides[i].scrollIntoView({ behavior: 'smooth' });
+            }
+            function current() {
+                return Math.round(window.scrollY / window.innerHeight);
+            }
+            document.addEventListener('keydown', (e) => {
+                if (['ArrowDown', 'PageDown', ' '].includes(e.key)) {
+                    e.preventDefault(); goTo(current() + 1);
+                } else if (['ArrowUp', 'PageUp'].includes(e.key)) {
+                    e.preventDefault(); goTo(current() - 1);
+                } else if (e.key === 'Home') {
+                    e.preventDefault(); goTo(0);
+                } else if (e.key === 'End') {
+                    e.preventDefault(); goTo(slides.length - 1);
+                }
+            });
+        })();
+    </script>
+</body>
+</html>
