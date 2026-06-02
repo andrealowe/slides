@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Domino for Automated Target Recognition</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+:root {
+    /* Domino Light Corporate palette */
+    --bg-primary: #FFFFFF;
+    --bg-surface: #F1F0F4;
+    --text-primary: #000000;
+    --text-secondary: #3C3A42;
+    --text-muted: #777384;
+    --accent: #FF6543;
+    --divider: rgba(0, 0, 0, 0.08);
+
+    /* Typography */
+    --font-display: 'New Grotesk', 'Inter', 'Helvetica Neue', sans-serif;
+    --font-body: 'New Grotesk', 'Inter', 'Helvetica Neue', sans-serif;
+    --font-mono: 'New Grotesk Mono', 'JetBrains Mono', monospace;
+
+    /* Boosted type scale (larger than default for video readability) */
+    --title-size: clamp(2.75rem, 6.5vw, 6rem);
+    --h2-size: clamp(2rem, 4.5vw, 3.75rem);
+    --h3-size: clamp(1.35rem, 2.4vw, 2rem);
+    --body-size: clamp(1.05rem, 1.6vw, 1.5rem);
+    --lead-size: clamp(1.25rem, 2vw, 1.85rem);
+    --small-size: clamp(0.9rem, 1.2vw, 1.15rem);
+    --eyebrow-size: clamp(0.85rem, 1.05vw, 1.1rem);
+    --cta-size: clamp(3rem, 7.5vw, 7rem);
+
+    /* Layout */
+    --slide-padding: clamp(2rem, 5vw, 5rem);
+    --content-gap: clamp(1.25rem, 2.4vw, 2.5rem);
+    --element-gap: clamp(0.6rem, 1.2vw, 1.25rem);
+
+    /* Motion */
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --duration-normal: 0.6s;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+    height: 100%;
+    overflow-x: hidden;
+}
+
+html {
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-body);
+    font-weight: 400;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Slide container */
+.slide {
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    padding: var(--slide-padding);
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.slide-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-height: 100%;
+    overflow: hidden;
+    width: 100%;
+}
+
+/* Typography primitives */
+.eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--eyebrow-size);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+    white-space: nowrap;
+}
+
+.eyebrow-row {
+    flex-shrink: 0;
+}
+
+h1.title {
+    font-family: var(--font-display);
+    font-size: var(--title-size);
+    font-weight: 700;
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+    color: var(--text-primary);
+}
+
+h2.headline {
+    font-family: var(--font-display);
+    font-size: var(--h2-size);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+}
+
+.lead {
+    font-size: var(--lead-size);
+    line-height: 1.4;
+    color: var(--text-secondary);
+    font-weight: 400;
+    max-width: 38ch;
+}
+
+.slide-1 .lead {
+    font-size: clamp(1rem, 1.45vw, 1.35rem);
+    line-height: 1.45;
+    max-width: 36ch;
+}
+
+.slide-1 .scenario-note {
+    font-size: clamp(0.8rem, 0.95vw, 0.95rem);
+}
+
+.body-text {
+    font-size: var(--body-size);
+    line-height: 1.5;
+    color: var(--text-secondary);
+}
+
+.muted {
+    color: var(--text-muted);
+    font-size: var(--small-size);
+}
+
+/* ============================================
+   SLIDE 1: Split title card
+   ============================================ */
+.slide-1 .grid {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: center;
+    height: 100%;
+}
+
+.slide-1 .left {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.5rem, 2.8vw, 2.75rem);
+}
+
+.slide-1 .left .lead {
+    margin-top: clamp(0.5rem, 1vw, 1rem);
+}
+
+.slide-1 .left .scenario-note {
+    margin-top: clamp(1.25rem, 2.5vw, 2.5rem);
+}
+
+.slide-1 .eyebrow-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.slide-1 .eyebrow-bar {
+    width: clamp(2.5rem, 4vw, 4rem);
+    height: 2px;
+    background: var(--accent);
+}
+
+.slide-1 .scenario-note {
+    font-family: var(--font-mono);
+    font-size: var(--small-size);
+    color: var(--text-muted);
+    line-height: 1.5;
+    border-left: 2px solid var(--divider);
+    padding-left: 1rem;
+    max-width: 42ch;
+    margin-top: clamp(0.5rem, 1vw, 1rem);
+}
+
+.slide-1 .right {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(1.5rem, 3vw, 3rem);
+    height: 100%;
+}
+
+.sonar-graphic {
+    width: clamp(220px, 28vw, 380px);
+    height: clamp(220px, 28vw, 380px);
+    position: relative;
+    flex-shrink: 0;
+}
+
+.pill-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(0.75rem, 1.5vw, 1.25rem);
+    width: 100%;
+    max-width: 460px;
+}
+
+.pill {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: clamp(0.7rem, 1.2vw, 1rem) clamp(1rem, 1.5vw, 1.35rem);
+    background: transparent;
+    border: 1.5px solid rgba(0, 0, 0, 0.14);
+    border-radius: 999px;
+    font-size: clamp(0.95rem, 1.35vw, 1.25rem);
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1;
+    transition: border-color 0.3s var(--ease-out-expo), background 0.3s var(--ease-out-expo);
+}
+
+.pill .icon {
+    width: clamp(20px, 1.8vw, 26px);
+    height: clamp(20px, 1.8vw, 26px);
+    flex-shrink: 0;
+    stroke: var(--accent);
+}
+
+/* ============================================
+   SLIDE 2: Three pillars
+   ============================================ */
+.slide-2 .header {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(2.5rem, 4vw, 4rem);
+    margin-bottom: clamp(3rem, 5vw, 5rem);
+}
+
+.slide-2 .headline { max-width: 26ch; }
+
+.slide-2 .pillars {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(1.5rem, 2.5vw, 2.5rem);
+    align-items: stretch;
+}
+
+.pillar {
+    display: flex;
+    flex-direction: column;
+    padding: clamp(2rem, 3vw, 3rem) clamp(1.75rem, 2.5vw, 2.5rem) clamp(2rem, 3vw, 3rem);
+    background: var(--bg-surface);
+    border-radius: 18px;
+    position: relative;
+    overflow: hidden;
+}
+
+.pillar .icon-wrap { margin-bottom: clamp(1.75rem, 2.5vw, 2.5rem); }
+.pillar h3 { margin-bottom: clamp(0.75rem, 1.2vw, 1.1rem); }
+
+.pillar .icon-wrap {
+    width: clamp(44px, 4.2vw, 60px);
+    height: clamp(44px, 4.2vw, 60px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border-radius: 0;
+}
+
+.pillar .icon-wrap svg {
+    width: 100%;
+    height: 100%;
+    stroke: var(--accent);
+    stroke-width: 1.6;
+}
+
+.pillar h3 {
+    font-family: var(--font-display);
+    font-size: var(--h3-size);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    position: relative;
+    z-index: 1;
+}
+
+.pillar p {
+    font-size: var(--body-size);
+    line-height: 1.5;
+    color: var(--text-secondary);
+    position: relative;
+    z-index: 1;
+}
+
+/* ============================================
+   SLIDE 3: Two audiences
+   ============================================ */
+.slide-3 .header {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(2.5rem, 4vw, 4rem);
+    margin-bottom: clamp(3rem, 5vw, 5rem);
+}
+
+.slide-3 .headline { max-width: 45ch; }
+
+.slide-3 .audiences {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(1.5rem, 3vw, 3rem);
+    align-items: stretch;
+}
+
+.audience {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1rem, 1.8vw, 1.5rem);
+    padding: clamp(1.75rem, 3vw, 2.75rem);
+    background: var(--bg-surface);
+    border-radius: 16px;
+    position: relative;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.audience-top {
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 1.6vw, 1.5rem);
+    min-width: 0;
+}
+
+.audience-top h3 { min-width: 0; }
+
+.audience .icon-wrap {
+    width: clamp(48px, 4.5vw, 64px);
+    height: clamp(48px, 4.5vw, 64px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    flex-shrink: 0;
+}
+
+.audience .icon-wrap svg {
+    width: 100%;
+    height: 100%;
+    stroke: var(--accent);
+    stroke-width: 1.6;
+}
+
+.audience h3 {
+    font-family: var(--font-display);
+    font-size: var(--h3-size);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+}
+
+.role-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.6rem;
+    list-style: none;
+}
+
+.role-list li {
+    font-family: var(--font-mono);
+    font-size: clamp(0.85rem, 1.1vw, 1.05rem);
+    background: #FFFFFF;
+    color: var(--text-primary);
+    padding: 0.45rem 0.9rem;
+    border-radius: 6px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.benefit {
+    margin-top: auto;
+    padding-top: clamp(0.75rem, 1.4vw, 1.25rem);
+    border-top: 1px solid var(--divider);
+    font-size: var(--body-size);
+    line-height: 1.45;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.benefit .label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--small-size);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+/* ============================================
+   SLIDE 4: CTA
+   ============================================ */
+.slide-4 {
+    background:
+        radial-gradient(ellipse at 85% 15%, rgba(255, 101, 67, 0.06) 0%, transparent 55%),
+        radial-gradient(ellipse at 15% 85%, rgba(255, 101, 67, 0.04) 0%, transparent 55%),
+        #FFFFFF;
+}
+
+.slide-4 .cta-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: clamp(1.5rem, 2.5vw, 2.25rem);
+    text-align: left;
+    max-width: 100%;
+}
+
+.slide-4 .eyebrow {
+    margin-bottom: 0;
+}
+
+.cta-visit-label {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 3.25rem);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+}
+
+.url-bar {
+    display: inline-flex;
+    align-items: center;
+    gap: clamp(0.9rem, 1.6vw, 1.4rem);
+    padding: clamp(1rem, 1.7vw, 1.5rem) clamp(1.5rem, 2.2vw, 2.25rem);
+    background: #FFFFFF;
+    border: 2px solid var(--text-primary);
+    border-radius: 16px;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04);
+    max-width: 100%;
+}
+
+.url-bar .globe {
+    width: clamp(34px, 3vw, 48px);
+    height: clamp(34px, 3vw, 48px);
+    stroke: var(--accent);
+    stroke-width: 1.8;
+    flex-shrink: 0;
+}
+
+.cta-url {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.035em;
+    color: var(--text-primary);
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.02em;
+}
+
+.cta-url .domain { color: var(--text-primary); }
+.cta-url .slash { color: var(--accent); }
+
+.cta-url .path {
+    background: linear-gradient(135deg, #FF9421 0%, #F8475E 50%, #FF6543 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.cta-sub {
+    font-size: var(--lead-size);
+    color: var(--text-secondary);
+    max-width: 42ch;
+    line-height: 1.4;
+}
+
+.cta-sub .arrow {
+    display: inline-block;
+    margin-left: 0.4em;
+    color: var(--accent);
+    font-weight: 700;
+}
+
+.cta-decor {
+    position: absolute;
+    right: -8%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: clamp(260px, 30vw, 440px);
+    height: clamp(260px, 30vw, 440px);
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* ============================================
+   Corner logo
+   ============================================ */
+.corner-logo {
+    position: fixed;
+    bottom: 24px;
+    left: 28px;
+    height: 26px;
+    width: auto;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+/* ============================================
+   Reveal animations
+   ============================================ */
+.reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity var(--duration-normal) var(--ease-out-expo),
+                transform var(--duration-normal) var(--ease-out-expo);
+}
+
+.slide.visible .reveal { opacity: 1; transform: translateY(0); }
+
+.slide.visible .reveal:nth-child(1) { transition-delay: 0.05s; }
+.slide.visible .reveal:nth-child(2) { transition-delay: 0.15s; }
+.slide.visible .reveal:nth-child(3) { transition-delay: 0.25s; }
+.slide.visible .reveal:nth-child(4) { transition-delay: 0.35s; }
+.slide.visible .reveal:nth-child(5) { transition-delay: 0.45s; }
+.slide.visible .reveal:nth-child(6) { transition-delay: 0.55s; }
+
+.stagger > * {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.55s var(--ease-out-expo), transform 0.55s var(--ease-out-expo);
+}
+
+.slide.visible .stagger > *:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 0.2s; }
+.slide.visible .stagger > *:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 0.32s; }
+.slide.visible .stagger > *:nth-child(3) { opacity: 1; transform: translateY(0); transition-delay: 0.44s; }
+.slide.visible .stagger > *:nth-child(4) { opacity: 1; transform: translateY(0); transition-delay: 0.56s; }
+
+/* Sonar animation */
+@keyframes sonar-pulse {
+    0% { transform: scale(0.6); opacity: 0; }
+    25% { opacity: 0.55; }
+    100% { transform: scale(1); opacity: 0; }
+}
+
+.slide.visible .sonar-ring {
+    animation: sonar-pulse 3.6s var(--ease-out-expo) infinite;
+}
+
+.slide.visible .sonar-ring.r2 { animation-delay: 1.2s; }
+.slide.visible .sonar-ring.r3 { animation-delay: 2.4s; }
+
+/* ============================================
+   Reduced motion
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.2s !important;
+    }
+    html { scroll-behavior: auto; }
+}
+
+/* ============================================
+   Responsive breakpoints
+   ============================================ */
+@media (max-height: 800px) {
+    :root {
+        --title-size: clamp(2.25rem, 5.5vw, 4.5rem);
+        --h2-size: clamp(1.75rem, 4vw, 3rem);
+        --slide-padding: clamp(1.5rem, 4vw, 3.5rem);
+        --content-gap: clamp(1rem, 2vw, 1.75rem);
+    }
+}
+
+@media (max-height: 650px) {
+    :root {
+        --title-size: clamp(1.85rem, 4.8vw, 3.5rem);
+        --h2-size: clamp(1.5rem, 3.5vw, 2.5rem);
+        --h3-size: clamp(1.15rem, 2.2vw, 1.65rem);
+        --body-size: clamp(0.95rem, 1.4vw, 1.25rem);
+        --lead-size: clamp(1.1rem, 1.7vw, 1.5rem);
+        --cta-size: clamp(2.25rem, 6vw, 5rem);
+        --slide-padding: clamp(1.25rem, 3vw, 2.5rem);
+        --content-gap: clamp(0.75rem, 1.6vw, 1.25rem);
+    }
+    .corner-logo { height: 22px; }
+}
+
+@media (max-width: 900px) {
+    .slide-1 .grid,
+    .slide-2 .pillars,
+    .slide-3 .audiences {
+        grid-template-columns: 1fr;
+        gap: clamp(1rem, 2vw, 1.5rem);
+    }
+    .pill-grid { max-width: 100%; }
+    .sonar-graphic {
+        width: clamp(180px, 35vw, 260px);
+        height: clamp(180px, 35vw, 260px);
+    }
+    .cta-decor { display: none; }
+}
+</style>
+</head>
+<body>
+
+<img src="domino-logo.png" class="corner-logo" alt="Domino">
+
+<!-- ============================================================
+     SLIDE 1: Split title card
+     ============================================================ -->
+<section class="slide slide-1">
+    <div class="slide-content">
+        <div class="grid">
+            <div class="left">
+                <div class="eyebrow-row reveal">
+                    <span class="eyebrow-bar"></span>
+                    <span class="eyebrow">Domino Public Sector</span>
+                </div>
+                <h1 class="title reveal">Domino for Automated Target Recognition</h1>
+                <p class="lead reveal">Today's example: sonar object classification.</p>
+                <p class="scenario-note reveal">Same approach applies to infrastructure inspection, drone footage analysis, and search and rescue.</p>
+            </div>
+            <div class="right">
+                <!-- Sonar graphic -->
+                <svg class="sonar-graphic reveal" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <defs>
+                        <linearGradient id="sonarGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#FF9421"/>
+                            <stop offset="50%" stop-color="#FF6543"/>
+                            <stop offset="100%" stop-color="#8636F8"/>
+                        </linearGradient>
+                        <radialGradient id="sonarFill" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" stop-color="#FF6543" stop-opacity="0.06"/>
+                            <stop offset="100%" stop-color="#FF6543" stop-opacity="0"/>
+                        </radialGradient>
+                    </defs>
+                    <!-- Background fill -->
+                    <circle cx="200" cy="200" r="180" fill="url(#sonarFill)"/>
+                    <!-- Static concentric rings -->
+                    <circle cx="200" cy="200" r="180" fill="none" stroke="rgba(0,0,0,0.06)" stroke-width="1"/>
+                    <circle cx="200" cy="200" r="140" fill="none" stroke="rgba(0,0,0,0.06)" stroke-width="1"/>
+                    <circle cx="200" cy="200" r="100" fill="none" stroke="rgba(0,0,0,0.06)" stroke-width="1"/>
+                    <circle cx="200" cy="200" r="60" fill="none" stroke="rgba(0,0,0,0.06)" stroke-width="1"/>
+                    <!-- Cross-hairs -->
+                    <line x1="20" y1="200" x2="380" y2="200" stroke="rgba(0,0,0,0.06)" stroke-width="1"/>
+                    <line x1="200" y1="20" x2="200" y2="380" stroke="rgba(0,0,0,0.06)" stroke-width="1"/>
+                    <!-- Animated pulse rings -->
+                    <circle class="sonar-ring" cx="200" cy="200" r="180" fill="none" stroke="url(#sonarGrad)" stroke-width="2" style="transform-origin: 200px 200px"/>
+                    <circle class="sonar-ring r2" cx="200" cy="200" r="180" fill="none" stroke="url(#sonarGrad)" stroke-width="2" style="transform-origin: 200px 200px"/>
+                    <circle class="sonar-ring r3" cx="200" cy="200" r="180" fill="none" stroke="url(#sonarGrad)" stroke-width="2" style="transform-origin: 200px 200px"/>
+                    <!-- Detection markers -->
+                    <circle cx="265" cy="155" r="6" fill="#FF6543"/>
+                    <circle cx="265" cy="155" r="12" fill="none" stroke="#FF6543" stroke-width="1.5" opacity="0.5"/>
+                    <circle cx="140" cy="240" r="5" fill="#FF6543"/>
+                    <circle cx="140" cy="240" r="11" fill="none" stroke="#FF6543" stroke-width="1.5" opacity="0.5"/>
+                    <circle cx="245" cy="260" r="4" fill="#FF6543"/>
+                    <!-- Sweep line -->
+                    <line x1="200" y1="200" x2="380" y2="200" stroke="#FF6543" stroke-width="2" opacity="0.4" transform="rotate(-30 200 200)"/>
+                </svg>
+                <!-- Pill badges -->
+                <div class="pill-grid reveal">
+                    <div class="pill">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12l2.5 2.5L16 9"/></svg>
+                        Accurate
+                    </div>
+                    <div class="pill">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6"/><path d="M9 17h4"/></svg>
+                        Auditable
+                    </div>
+                    <div class="pill">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3.2v5.3c0 4.6-3.3 8.3-8 9.5-4.7-1.2-8-4.9-8-9.5V6.2L12 3z"/><path d="M8.5 11.8l2.5 2.5 4.5-5"/></svg>
+                        Governed for ATO
+                    </div>
+                    <div class="pill">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0115-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 01-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg>
+                        Continuously Updated
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 2: Three pillars
+     ============================================================ -->
+<section class="slide slide-2">
+    <div class="slide-content">
+        <div class="header">
+            <div class="eyebrow-row reveal" style="display:flex; align-items:center; gap:1rem;">
+                <span style="width: clamp(2.5rem, 4vw, 4rem); height: 2px; background: var(--accent);"></span>
+                <span class="eyebrow">What Mission-Critical AI Requires</span>
+            </div>
+            <h2 class="headline reveal">The foundation mission AI runs on.</h2>
+        </div>
+        <div class="pillars stagger">
+            <!-- Pillar 1: System of record -->
+            <div class="pillar">
+                <div class="icon-wrap">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <ellipse cx="12" cy="5" rx="8" ry="3"/>
+                        <path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/>
+                        <path d="M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/>
+                    </svg>
+                </div>
+                <h3>System of record</h3>
+                <p>Every experiment, decision, and artifact captured automatically.</p>
+            </div>
+            <!-- Pillar 2: Production workbench -->
+            <div class="pillar">
+                <div class="icon-wrap">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="3" y="4" width="18" height="14" rx="2"/>
+                        <path d="M8 10l-2 2 2 2"/>
+                        <path d="M16 10l2 2-2 2"/>
+                        <path d="M13 9l-2 6"/>
+                        <path d="M3 20h18"/>
+                    </svg>
+                </div>
+                <h3>Production workbench</h3>
+                <p>Teams use the tools and IDEs they already know.</p>
+            </div>
+            <!-- Pillar 3: Orchestration -->
+            <div class="pillar">
+                <div class="icon-wrap">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="2.5"/>
+                        <circle cx="5" cy="5" r="2"/>
+                        <circle cx="19" cy="5" r="2"/>
+                        <circle cx="5" cy="19" r="2"/>
+                        <circle cx="19" cy="19" r="2"/>
+                        <path d="M6.5 6.5L10 10"/>
+                        <path d="M17.5 6.5L14 10"/>
+                        <path d="M6.5 17.5L10 14"/>
+                        <path d="M17.5 17.5L14 14"/>
+                    </svg>
+                </div>
+                <h3>Data and infra orchestration</h3>
+                <p>Move workloads across networks and environments without rewriting.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 3: Two audiences, one platform
+     ============================================================ -->
+<section class="slide slide-3">
+    <div class="slide-content">
+        <div class="header">
+            <div class="eyebrow-row reveal" style="display:flex; align-items:center; gap:1rem;">
+                <span style="width: clamp(2.5rem, 4vw, 4rem); height: 2px; background: var(--accent);"></span>
+                <span class="eyebrow">Built for Every Stakeholder</span>
+            </div>
+            <h2 class="headline reveal">One platform for every stakeholder.</h2>
+        </div>
+        <div class="audiences stagger">
+            <!-- Leadership -->
+            <div class="audience">
+                <div class="audience-top">
+                    <div class="icon-wrap">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M12 2L4 6v6c0 5 3.5 8.5 8 10 4.5-1.5 8-5 8-10V6l-8-4z"/>
+                            <path d="M9 12l2 2 4-4"/>
+                        </svg>
+                    </div>
+                    <h3>Leadership and governance</h3>
+                </div>
+                <ul class="role-list">
+                    <li>Program managers</li>
+                    <li>CDAOs</li>
+                    <li>CISOs</li>
+                    <li>Compliance officers</li>
+                </ul>
+                <div class="benefit">
+                    <span class="label">What they get</span>
+                    Centralized control and complete audit trails.
+                </div>
+            </div>
+            <!-- Practitioners -->
+            <div class="audience">
+                <div class="audience-top">
+                    <div class="icon-wrap">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M16 18l6-6-6-6"/>
+                            <path d="M8 6l-6 6 6 6"/>
+                            <path d="M14 4l-4 16"/>
+                        </svg>
+                    </div>
+                    <h3>Developers and contractors</h3>
+                </div>
+                <ul class="role-list">
+                    <li>Data scientists</li>
+                    <li>ML engineers</li>
+                    <li>Software developers</li>
+                    <li>Mission teams</li>
+                </ul>
+                <div class="benefit">
+                    <span class="label">What they get</span>
+                    Self-serve tools and infrastructure. Ship in days, not quarters.
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 4: Call to action
+     ============================================================ -->
+<section class="slide slide-4">
+    <div class="slide-content">
+        <div class="cta-content">
+            <div class="eyebrow-row reveal" style="display:flex; align-items:center; gap:1rem;">
+                <span style="width: clamp(2.5rem, 4vw, 4rem); height: 2px; background: var(--accent);"></span>
+                <span class="eyebrow">See It On Your Data</span>
+            </div>
+            <div class="cta-visit-label reveal">Visit us at</div>
+            <div class="url-bar reveal">
+                <svg class="globe" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="9"/>
+                    <path d="M3 12h18"/>
+                    <path d="M12 3a14 14 0 010 18"/>
+                    <path d="M12 3a14 14 0 000 18"/>
+                </svg>
+                <div class="cta-url">
+                    <span class="domain">domino.ai</span><span class="slash">/</span><span class="path">public-sector</span>
+                </div>
+            </div>
+            <p class="cta-sub reveal">Set up a demo built around your mission, your data, and your environment. <span class="arrow">&rarr;</span></p>
+        </div>
+        <!-- Decorative concentric ring graphic -->
+        <svg class="cta-decor" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+                <linearGradient id="ctaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#FF9421" stop-opacity="0.6"/>
+                    <stop offset="50%" stop-color="#FF6543" stop-opacity="0.5"/>
+                    <stop offset="100%" stop-color="#8636F8" stop-opacity="0.4"/>
+                </linearGradient>
+            </defs>
+            <circle cx="200" cy="200" r="190" fill="none" stroke="url(#ctaGrad)" stroke-width="1.5"/>
+            <circle cx="200" cy="200" r="150" fill="none" stroke="url(#ctaGrad)" stroke-width="1.5"/>
+            <circle cx="200" cy="200" r="110" fill="none" stroke="url(#ctaGrad)" stroke-width="1.5"/>
+            <circle cx="200" cy="200" r="70" fill="none" stroke="url(#ctaGrad)" stroke-width="1.5"/>
+            <circle cx="200" cy="200" r="30" fill="none" stroke="url(#ctaGrad)" stroke-width="1.5"/>
+            <circle cx="200" cy="200" r="4" fill="#FF6543"/>
+        </svg>
+    </div>
+</section>
+
+<script>
+/* ============================================================
+   SlidePresentation
+   - Arrow-key + space navigation
+   - Touch swipe support
+   - Mouse wheel navigation (debounced)
+   - Intersection-observer driven reveal animations
+   ============================================================ */
+class SlidePresentation {
+    constructor() {
+        this.slides = Array.from(document.querySelectorAll('.slide'));
+        this.current = 0;
+        this.scrolling = false;
+
+        this.initObserver();
+        this.bindKeyboard();
+        this.bindWheel();
+        this.bindTouch();
+
+        // Show first slide immediately
+        if (this.slides[0]) this.slides[0].classList.add('visible');
+    }
+
+    initObserver() {
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    this.current = this.slides.indexOf(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        this.slides.forEach(s => io.observe(s));
+    }
+
+    goTo(index) {
+        index = Math.max(0, Math.min(this.slides.length - 1, index));
+        this.slides[index].scrollIntoView({ behavior: 'smooth', block: 'start' });
+        this.current = index;
+    }
+
+    next() { this.goTo(this.current + 1); }
+    prev() { this.goTo(this.current - 1); }
+
+    bindKeyboard() {
+        document.addEventListener('keydown', (e) => {
+            switch (e.key) {
+                case 'ArrowRight':
+                case 'ArrowDown':
+                case 'PageDown':
+                case ' ':
+                    e.preventDefault();
+                    this.next();
+                    break;
+                case 'ArrowLeft':
+                case 'ArrowUp':
+                case 'PageUp':
+                    e.preventDefault();
+                    this.prev();
+                    break;
+                case 'Home':
+                    e.preventDefault();
+                    this.goTo(0);
+                    break;
+                case 'End':
+                    e.preventDefault();
+                    this.goTo(this.slides.length - 1);
+                    break;
+            }
+        });
+    }
+
+    bindWheel() {
+        let timeout;
+        window.addEventListener('wheel', (e) => {
+            if (this.scrolling) return;
+            if (Math.abs(e.deltaY) < 30) return;
+            this.scrolling = true;
+            if (e.deltaY > 0) this.next();
+            else this.prev();
+            clearTimeout(timeout);
+            timeout = setTimeout(() => { this.scrolling = false; }, 800);
+        }, { passive: true });
+    }
+
+    bindTouch() {
+        let startY = 0;
+        window.addEventListener('touchstart', (e) => {
+            startY = e.touches[0].clientY;
+        }, { passive: true });
+
+        window.addEventListener('touchend', (e) => {
+            const endY = e.changedTouches[0].clientY;
+            const diff = startY - endY;
+            if (Math.abs(diff) < 50) return;
+            if (diff > 0) this.next();
+            else this.prev();
+        }, { passive: true });
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => new SlidePresentation());
+</script>
+</body>
+</html>
