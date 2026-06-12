@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Domino Extensions — Summary</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+
+    <style>
+        :root {
+            /* Corporate Light preset (matches the main deck) */
+            --bg-primary: #FFFFFF;
+            --bg-surface: #F1F0F4;
+            --text-primary: #000000;
+            --text-secondary: #3C3A42;
+            --text-muted: #777384;
+            --divider: rgba(0, 0, 0, 0.08);
+
+            --accent: #FF6543;
+            --light-purple: #D4C9FC;
+            --light-blue: #A5C5F6;
+
+            --domino-gradient: linear-gradient(135deg, #FF9421 0%, #F8475E 34%, #F020B3 66%, #8636F8 100%);
+
+            --font-display: 'New Grotesk', 'Inter', 'Helvetica Neue', sans-serif;
+            --font-body: 'New Grotesk', 'Inter', 'Helvetica Neue', sans-serif;
+            --font-mono: 'New Grotesk Mono', 'JetBrains Mono', monospace;
+
+            --eyebrow-size: clamp(0.85rem, 1.1vw, 1.05rem);
+            --slide-padding: clamp(2.5rem, 6vw, 6rem);
+
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --duration-normal: 0.7s;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: var(--font-body);
+            font-weight: 400;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            padding: var(--slide-padding);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            background: var(--bg-primary);
+        }
+
+        .slide-content {
+            flex: 1;
+            display: grid;
+            grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+            gap: clamp(2rem, 4vw, 5rem);
+            align-items: center;
+            justify-content: center;
+            max-height: 100%;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .statement-text {
+            display: flex;
+            flex-direction: column;
+            gap: clamp(1.5rem, 3vw, 2.5rem);
+            min-width: 0;
+        }
+
+        .eyebrow {
+            font-family: var(--font-mono);
+            font-size: var(--eyebrow-size);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            color: var(--accent);
+        }
+
+        h1.statement-headline {
+            font-family: var(--font-display);
+            font-size: clamp(3.25rem, 8vw, 7rem);
+            font-weight: 700;
+            line-height: 0.97;
+            letter-spacing: -0.035em;
+            color: var(--text-primary);
+        }
+
+        .gradient-text {
+            background: var(--domino-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+        }
+
+        .statement-rule {
+            width: clamp(80px, 10vw, 160px);
+            height: 4px;
+            background: var(--domino-gradient);
+            border-radius: 2px;
+        }
+
+        /* Subtitle: notably larger than the main deck's slide-2 subtitle
+           (was clamp(1.2rem, 1.9vw, 1.75rem); now clamp(1.65rem, 2.8vw, 2.6rem)).
+           Plus tighter line-height for impact. */
+        .statement-sub {
+            font-family: var(--font-body);
+            font-size: clamp(1.65rem, 2.8vw, 2.6rem);
+            color: var(--text-secondary);
+            line-height: 1.25;
+            font-weight: 400;
+            letter-spacing: -0.015em;
+        }
+
+        .statement-sub strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .statement-graphic {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 0;
+        }
+
+        .statement-motif {
+            width: 100%;
+            height: auto;
+            max-width: clamp(300px, 36vw, 520px);
+            aspect-ratio: 1 / 1;
+        }
+
+        .corner-logo {
+            position: fixed;
+            bottom: 24px;
+            left: 28px;
+            height: 26px;
+            width: auto;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        /* Entrance animation, runs once on load */
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            animation: revealIn var(--duration-normal) var(--ease-out-expo) forwards;
+        }
+        .reveal:nth-child(1) { animation-delay: 0.05s; }
+        .reveal:nth-child(2) { animation-delay: 0.18s; }
+        .reveal:nth-child(3) { animation-delay: 0.31s; }
+        .reveal:nth-child(4) { animation-delay: 0.44s; }
+        .statement-graphic.reveal { animation-delay: 0.57s; }
+
+        @keyframes revealIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-height: 700px) {
+            :root { --slide-padding: clamp(1.5rem, 4vw, 3rem); }
+            h1.statement-headline { font-size: clamp(2.75rem, 7vw, 5.5rem); }
+            .statement-sub { font-size: clamp(1.35rem, 2.4vw, 2.1rem); }
+        }
+
+        @media (max-width: 900px) {
+            .slide-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            .statement-motif { max-width: 80vw; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .reveal { animation: none; opacity: 1; transform: none; }
+        }
+
+        @media print {
+            *, *::before, *::after {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .corner-logo { display: none !important; }
+            .reveal { animation: none; opacity: 1; transform: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Global SVG defs: shared Domino Gradient (for the modular tile grid) -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+        <defs>
+            <linearGradient id="dominoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%"   stop-color="#FF9421"/>
+                <stop offset="34%"  stop-color="#F8475E"/>
+                <stop offset="66%"  stop-color="#F020B3"/>
+                <stop offset="100%" stop-color="#8636F8"/>
+            </linearGradient>
+        </defs>
+    </svg>
+
+    <img src="domino-logo.png" class="corner-logo" alt="Domino">
+
+    <!-- ===========================================
+         SUMMARY SLIDE
+         Reuses slide 2's eyebrow, headline, gradient-treated word, and
+         the modular tile grid. Swaps in a larger subtitle that
+         summarizes the deck's overall theme.
+         =========================================== -->
+    <section class="slide slide-statement">
+        <div class="slide-content">
+            <div class="statement-text">
+                <div class="eyebrow reveal">Domino Extensions</div>
+                <h1 class="statement-headline reveal">Domino <span class="gradient-text">adapts</span><br>to your work.</h1>
+                <div class="statement-rule reveal"></div>
+                <p class="statement-sub reveal">One platform for <strong>different teams</strong> and <strong>different problems</strong>.</p>
+            </div>
+
+            <div class="statement-graphic reveal">
+                <svg class="statement-motif" viewBox="0 0 600 600" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <!-- Background grid: all 25 cells in Light Grey.
+                         5 x 76 + 4 x 14 = 436 wide, margins of (600-436)/2 = 82. -->
+                    <g fill="#F1F0F4">
+                        <rect x="82"  y="82"  width="76" height="76" rx="10"/>
+                        <rect x="172" y="82"  width="76" height="76" rx="10"/>
+                        <rect x="262" y="82"  width="76" height="76" rx="10"/>
+                        <rect x="352" y="82"  width="76" height="76" rx="10"/>
+                        <rect x="442" y="82"  width="76" height="76" rx="10"/>
+                        <rect x="82"  y="172" width="76" height="76" rx="10"/>
+                        <rect x="172" y="172" width="76" height="76" rx="10"/>
+                        <rect x="262" y="172" width="76" height="76" rx="10"/>
+                        <rect x="352" y="172" width="76" height="76" rx="10"/>
+                        <rect x="442" y="172" width="76" height="76" rx="10"/>
+                        <rect x="82"  y="262" width="76" height="76" rx="10"/>
+                        <rect x="172" y="262" width="76" height="76" rx="10"/>
+                        <rect x="262" y="262" width="76" height="76" rx="10"/>
+                        <rect x="352" y="262" width="76" height="76" rx="10"/>
+                        <rect x="442" y="262" width="76" height="76" rx="10"/>
+                        <rect x="82"  y="352" width="76" height="76" rx="10"/>
+                        <rect x="172" y="352" width="76" height="76" rx="10"/>
+                        <rect x="262" y="352" width="76" height="76" rx="10"/>
+                        <rect x="352" y="352" width="76" height="76" rx="10"/>
+                        <rect x="442" y="352" width="76" height="76" rx="10"/>
+                        <rect x="82"  y="442" width="76" height="76" rx="10"/>
+                        <rect x="172" y="442" width="76" height="76" rx="10"/>
+                        <rect x="262" y="442" width="76" height="76" rx="10"/>
+                        <rect x="352" y="442" width="76" height="76" rx="10"/>
+                        <rect x="442" y="442" width="76" height="76" rx="10"/>
+                    </g>
+                    <!-- Activated cluster: colors progress by row through the
+                         Domino Gradient (gold -> red -> pink -> purple). -->
+                    <rect x="172" y="82"  width="76" height="76" rx="10" fill="#FF9421"/>
+                    <rect x="262" y="82"  width="76" height="76" rx="10" fill="#FF9421"/>
+                    <rect x="172" y="172" width="76" height="76" rx="10" fill="#F8475E"/>
+                    <rect x="262" y="172" width="76" height="76" rx="10" fill="#F8475E"/>
+                    <rect x="352" y="172" width="76" height="76" rx="10" fill="#F8475E"/>
+                    <rect x="262" y="262" width="76" height="76" rx="10" fill="#F020B3"/>
+                    <rect x="352" y="262" width="76" height="76" rx="10" fill="#F020B3"/>
+                    <rect x="352" y="352" width="76" height="76" rx="10" fill="#8636F8"/>
+                </svg>
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>
