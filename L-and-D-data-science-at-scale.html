@@ -89,7 +89,7 @@ p, li { font-family: var(--font-body); font-weight: 400; font-size: var(--body-s
 }
 .lead { font-size: clamp(1.15rem, 1.95vw, 1.8rem); color: var(--text-secondary); max-width: 64ch; margin-top: clamp(1rem, 1.8vw, 1.7rem); line-height: 1.5; }
 .kicker { margin-top: clamp(0.9rem, 1.8vw, 1.5rem); font-family: var(--font-mono); font-size: clamp(0.8rem, 1.15vw, 1.05rem); color: var(--accent); letter-spacing: 0.01em; line-height: 1.45; max-width: 80ch; background: var(--bg-surface); border-left: 4px solid transparent; border-image: var(--domino-gradient) 1; padding: clamp(0.65rem,1.3vw,1rem) clamp(0.85rem,1.6vw,1.2rem); border-radius: 0 12px 12px 0; align-self: flex-start; flex: 0 0 auto; }
-.footnote { margin-top: clamp(0.9rem, 1.7vw, 1.4rem); padding-top: clamp(0.55rem, 1.1vw, 0.9rem); border-top: 1px solid var(--divider); font-size: clamp(0.7rem, 1vw, 0.85rem); color: var(--text-muted); max-width: 100%; line-height: 1.5; column-count: 2; column-gap: clamp(2rem, 4vw, 4rem); }
+.footnote { margin-top: clamp(0.9rem, 1.7vw, 1.4rem); padding-top: clamp(0.55rem, 1.1vw, 0.9rem); border-top: 1px solid var(--divider); font-size: clamp(0.7rem, 1vw, 0.85rem); color: var(--text-muted); max-width: 100%; line-height: 1.5; }
 .gradient-text { background: var(--domino-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 
 /* ---- Bullets ---- */
@@ -308,7 +308,7 @@ p, li { font-family: var(--font-body); font-weight: 400; font-size: var(--body-s
         <ul class="bullets reveal">
             <li>A demo is one run. Production is thousands of runs, across many people, changing data, and time.</li>
             <li>The hard parts are not the math. They are trust, accountability, and repeatability.</li>
-            <li>These four problems are where data science turns into engineering.</li>
+            <li>The problems are where data science turns into engineering.</li>
         </ul>
     </div>
 </section>
@@ -340,7 +340,6 @@ p, li { font-family: var(--font-body); font-weight: 400; font-size: var(--body-s
             <div class="card"><span class="num">03</span><h3>No observability</h3><p>The model ships, then drifts silently, with no audit log.</p></div>
             <div class="card"><span class="num">04</span><h3>Unclear accountability</h3><p>When it goes wrong, no one can say why or who decides.</p></div>
         </div>
-        <p class="reveal kicker">Those failure modes have names. They are the four hard problems.</p>
     </div>
 </section>
 
@@ -644,8 +643,8 @@ p, li { font-family: var(--font-body); font-weight: 400; font-size: var(--body-s
 <!-- ============ 23. DOMINO PLATFORM ============ -->
 <section class="slide tight bloom">
     <div class="slide-content">
-        <span class="eyebrow reveal">The platform</span>
-        <h2 class="reveal">Domino was built for this moment</h2>
+        <span class="eyebrow reveal">Built for this moment</span>
+        <h2 class="reveal">The Domino Platform</h2>
         <div class="platform-pillars reveal">
             <div class="pillar">
                 <svg class="icon sm picon" viewBox="0 0 48 48"><rect x="8" y="10" width="32" height="28" rx="3" stroke="#FF6543" stroke-width="2.2"/><line x1="8" y1="19" x2="40" y2="19" stroke="#FF6543" stroke-width="2.2"/><rect x="12" y="24" width="9" height="9" rx="1.5" stroke="#FF6543" stroke-width="2.2"/></svg>
@@ -677,6 +676,22 @@ p, li { font-family: var(--font-body); font-weight: 400; font-size: var(--body-s
             <div class="prim"><svg class="icon sm" viewBox="0 0 48 48"><rect x="14" y="14" width="20" height="20" rx="2" stroke="#FF6543" stroke-width="2.2"/><line x1="20" y1="8" x2="20" y2="14" stroke="#FF6543" stroke-width="2.2"/><line x1="28" y1="8" x2="28" y2="14" stroke="#FF6543" stroke-width="2.2"/><line x1="20" y1="34" x2="20" y2="40" stroke="#FF6543" stroke-width="2.2"/><line x1="28" y1="34" x2="28" y2="40" stroke="#FF6543" stroke-width="2.2"/><line x1="8" y1="20" x2="14" y2="20" stroke="#FF6543" stroke-width="2.2"/><line x1="8" y1="28" x2="14" y2="28" stroke="#FF6543" stroke-width="2.2"/><line x1="34" y1="20" x2="40" y2="20" stroke="#FF6543" stroke-width="2.2"/><line x1="34" y1="28" x2="40" y2="28" stroke="#FF6543" stroke-width="2.2"/></svg><span>Compute</span></div>
             <div class="prim"><svg class="icon sm" viewBox="0 0 48 48"><circle cx="24" cy="12" r="4" stroke="#FF6543" stroke-width="2.2"/><circle cx="13" cy="34" r="4" stroke="#FF6543" stroke-width="2.2"/><circle cx="35" cy="34" r="4" stroke="#FF6543" stroke-width="2.2"/><line x1="22" y1="15.5" x2="15" y2="30.5" stroke="#FF6543" stroke-width="2.2"/><line x1="26" y1="15.5" x2="33" y2="30.5" stroke="#FF6543" stroke-width="2.2"/></svg><span>Models</span></div>
         </div>
+    </div>
+</section>
+
+<!-- ============ 23b. CODING ASSISTANTS ============ -->
+<section class="slide tight">
+    <div class="slide-content">
+        <span class="eyebrow reveal">Close to home</span>
+        <h2 class="reveal">The assistant writing your code raises all four problems</h2>
+        <p class="reveal lead">AI coding assistants already drive a lot of real development: agents that read a codebase, run commands, and open pull requests. In a regulated environment, the code they produce carries the same burden as any model.</p>
+        <div class="grid grid-2 reveal">
+            <div class="card"><span class="num">Governance</span><p>Who is allowed which tools and models, with approvals and an audit trail. The pattern to avoid is an agent with full access and no monitoring.</p></div>
+            <div class="card"><span class="num">Reproducibility</span><p>Can you rebuild what the assistant produced, with the same prompt, context, and dependencies.</p></div>
+            <div class="card"><span class="num">Explainability, as tracing</span><p>Can you show why a change was made, not just that it passed the tests.</p></div>
+            <div class="card"><span class="num">Quality and blind spots</span><p>AI code can look tidy long before it is safe, and can quietly pull in risky or invented dependencies.</p></div>
+        </div>
+        <p class="reveal kicker">And the rulebook has not caught up. SR 26-2 puts generative and agentic AI out of scope, so the burden falls back on your own governance. The real tension is speed versus proof.</p>
     </div>
 </section>
 
