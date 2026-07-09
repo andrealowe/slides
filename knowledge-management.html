@@ -10,8 +10,9 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:       #F9F8F6;
+      --bg:       #FFFFFF;
       --text:     #111111;
+      --domino-gradient: linear-gradient(135deg, #FF9421 0%, #F8475E 34%, #F020B3 66%, #8636F8 100%);
       --mid:      #454545;
       --sub:      #777777;
       --orange:   #FF6543;
@@ -103,7 +104,14 @@
       letter-spacing: -0.03em;
       color: var(--text);
     }
-    h1 em, h2 em { font-style: normal; color: var(--orange); }
+    h1 em, h2 em {
+      font-style: normal;
+      background: var(--domino-gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+    }
 
     .body {
       font-size: clamp(1rem, 2.1vw, 1.75rem);
@@ -134,26 +142,16 @@
     }
     @media print { .corner-logo { display: none !important; } }
 
-    /* ── NAV ── */
-    .nav {
+    /* ── TOP ACCENT BAR (Domino gradient) ── */
+    .top-accent {
       position: fixed;
-      bottom: 2.5vh; right: 3vw;
-      display: flex; gap: 0.45rem;
-      z-index: 999;
+      top: 0; left: 0; right: 0;
+      height: 5px;
+      background: var(--domino-gradient);
+      z-index: 1000;
+      pointer-events: none;
     }
-    .nav button {
-      width: clamp(30px, 2.8vw, 42px);
-      height: clamp(30px, 2.8vw, 42px);
-      border-radius: 50%;
-      border: 1.5px solid rgba(17,17,17,0.18);
-      background: transparent;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      color: var(--sub);
-      transition: border-color 0.2s, color 0.2s;
-    }
-    .nav button:hover { border-color: var(--orange); color: var(--orange); }
-    .nav button svg { width: 13px; height: 13px; }
+    @media print { .top-accent { display: none !important; } }
   </style>
 </head>
 <body>
@@ -538,24 +536,11 @@
 </div><!-- /deck -->
 
 
+<!-- TOP ACCENT BAR -->
+<div class="top-accent"></div>
+
 <!-- DOMINO LOGO -->
 <img src="domino-logo.png" class="corner-logo" alt="Domino">
-
-<!-- NAV ARROWS -->
-<nav class="nav">
-  <button id="prev" aria-label="Previous">
-    <svg viewBox="0 0 14 14" fill="none" stroke="currentColor"
-         stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-      <polyline points="2,9 7,4 12,9"/>
-    </svg>
-  </button>
-  <button id="next" aria-label="Next">
-    <svg viewBox="0 0 14 14" fill="none" stroke="currentColor"
-         stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-      <polyline points="2,5 7,10 12,5"/>
-    </svg>
-  </button>
-</nav>
 
 <script>
   const deck   = document.getElementById('deck');
@@ -574,9 +559,6 @@
     if (i < 0 || i >= slides.length) return;
     deck.scrollTo({ top: i * vh(), behavior: 'smooth' });
   }
-
-  document.getElementById('prev').addEventListener('click', () => goTo(idx() - 1));
-  document.getElementById('next').addEventListener('click', () => goTo(idx() + 1));
 
   document.addEventListener('keydown', e => {
     if (e.key === 'ArrowDown'  || e.key === 'ArrowRight' || e.key === 'PageDown')  { e.preventDefault(); goTo(idx() + 1); }
