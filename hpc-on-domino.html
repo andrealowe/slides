@@ -149,6 +149,8 @@
   .col-visual svg { width: 100%; max-width: 460px; height: auto; }
 
   /* Slide 4 steps */
+  #s4 .slide-content { align-items: center; text-align: center; }
+  #s4 h2 { max-width: none; white-space: nowrap; }
   .steps { display: flex; gap: clamp(1.5rem, 4vw, 4rem); margin-top: clamp(2rem, 5vh, 4rem); }
   .step { flex: 1; }
   .step-num {
@@ -157,8 +159,8 @@
     background: var(--domino-gradient);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   }
-  .step-line { width: 3rem; height: 2px; background: var(--divider); margin: 1.25rem 0; }
-  .step p { font-size: var(--body-size); line-height: 1.2; color: var(--text-primary); max-width: 16ch; }
+  .step-line { width: 3rem; height: 2px; background: var(--divider); margin: 1.25rem auto; }
+  .step p { font-size: var(--body-size); line-height: 1.2; color: var(--text-primary); max-width: 16ch; margin: 0 auto; }
 
   /* Corner logo */
   .corner-logo { position: fixed; bottom: 24px; left: 28px; height: 26px; width: auto; z-index: 1000; pointer-events: none; }
@@ -179,6 +181,10 @@
   @media (max-width: 820px) {
     .silos, .row-split, .steps { flex-direction: column; align-items: flex-start; }
     .break { transform: rotate(90deg); }
+    #s4 .slide-content { align-items: flex-start; text-align: left; }
+    #s4 h2 { max-width: 28ch; white-space: normal; }
+    .step-line { margin: 1.25rem 0; }
+    .step p { margin: 0; }
   }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.2s !important; }
@@ -288,7 +294,7 @@
       <div class="step">
         <div class="step-num">01</div>
         <div class="step-line"></div>
-        <p>The scheduler your team already knows</p>
+        <p style="max-width: 19ch;">The scheduler your team already knows</p>
       </div>
       <div class="step">
         <div class="step-num">02</div>
