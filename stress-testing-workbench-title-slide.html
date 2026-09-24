@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Supervisory Stress-Testing Workbench | Built on Domino</title>
+<title>Supervisory stress-testing workbench | Built on Domino</title>
 <style>
   :root {
     --bg-primary: #FFFFFF;
@@ -32,7 +32,8 @@
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { height: 100%; overflow: hidden; }
+  html, body { height: 100%; overflow-x: hidden; }
+  html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
   body {
     background: var(--bg-primary);
     color: var(--text-primary);
@@ -45,6 +46,7 @@
     height: 100vh;
     height: 100dvh;
     overflow: hidden;
+    scroll-snap-align: start;
     display: flex;
     flex-direction: column;
     position: relative;
@@ -262,12 +264,99 @@
      spec gets updated, and suddenly you have to re-run the entire pipeline, knowing
      you'll need to defend these exact numbers two years down the road. -->
 
+
+<!-- script: When autonomous agents generate code and run pipelines on your behalf,
+     an immutable audit trail isn't just nice to have, it is mandatory for regulatory
+     trust. You can use AI to build fast. Domino gives you the enterprise compute,
+     data governance, and total reproducibility to ensure you build safely. -->
+<section class="slide" id="closingSlide">
+  <div class="top-bar"></div>
+
+  <!-- Line-art motif: stacked scenario runs feeding one governed record -->
+  <svg class="motif" viewBox="0 0 64 64" fill="none" stroke="#000000"
+       stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+       aria-hidden="true">
+    <rect class="draw" x="6" y="8" width="24" height="16" rx="3"/>
+    <rect class="draw" x="6" y="28" width="24" height="16" rx="3"/>
+    <rect class="draw" x="6" y="48" width="24" height="10" rx="3"/>
+    <path class="draw" d="M30 16 H42 V36"/>
+    <path class="draw" d="M30 36 H42"/>
+    <path class="draw" d="M30 53 H42 V36"/>
+    <circle class="draw" cx="50" cy="36" r="8"/>
+    <path class="draw" d="M46.5 36 l2.5 2.5 l4.5 -5"/>
+  </svg>
+
+  <div class="slide-content">
+    <div class="eyebrow reveal">
+      <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5"
+           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M8 48 L22 30 L34 38 L56 12"/>
+        <path d="M44 12 H56 V24"/>
+        <path d="M8 56 H56"/>
+      </svg>
+      <span>Regulated AI</span>
+    </div>
+
+    <h1 class="reveal">Build fast. Build safely.</h1>
+
+    <div class="built-on reveal">
+      Built on <span class="grad">Domino</span>
+    </div>
+
+    <div class="rule reveal"></div>
+
+    <div class="meta reveal">
+      <div class="chip">
+        <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="18" y="18" width="28" height="28" rx="4"/>
+          <rect x="27" y="27" width="10" height="10" rx="2"/>
+          <path d="M26 18 V9 M38 18 V9 M26 55 V46 M38 55 V46"/>
+          <path d="M18 26 H9 M18 38 H9 M55 26 H46 M55 38 H46"/>
+        </svg>
+        <span>Enterprise compute</span>
+      </div>
+      <div class="chip">
+        <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M32 8 V52"/>
+          <path d="M14 18 H50"/>
+          <path d="M20 56 H44"/>
+          <path d="M14 18 L7 34 H21 Z"/>
+          <path d="M50 18 L43 34 H57 Z"/>
+        </svg>
+        <span>Data governance</span>
+      </div>
+      <div class="chip">
+        <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M53 26 A22 22 0 1 0 55 38"/>
+          <path d="M42 24 H56 V10"/>
+          <path d="M24 32 l6 6 l12 -13"/>
+        </svg>
+        <span>Total reproducibility</span>
+      </div>
+    </div>
+  </div>
+</section>
+
 <script>
   const io = new IntersectionObserver((entries) => {
     entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
   }, { threshold: 0.35 });
-  document.querySelectorAll('.slide').forEach(s => io.observe(s));
+  const slides = [...document.querySelectorAll('.slide')];
+  slides.forEach(s => io.observe(s));
   requestAnimationFrame(() => document.getElementById('titleSlide').classList.add('visible'));
+
+  let i = 0;
+  function go(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides[i].scrollIntoView({ behavior: 'smooth' });
+  }
+  addEventListener('keydown', (e) => {
+    if (['ArrowDown', 'ArrowRight', ' ', 'PageDown'].includes(e.key)) { e.preventDefault(); go(i + 1); }
+    if (['ArrowUp', 'ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); go(i - 1); }
+  });
 </script>
 
 </body>
